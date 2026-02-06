@@ -24,10 +24,12 @@
     
     <!-- 用户已登录时显示收藏内容 -->
     <div v-else>
-      <h2>我的收藏</h2>
-      
-      <!-- 返回图鉴按钮 -->
-      <button @click="goToGallery" class="gallery-btn">返回图鉴</button>
+      <div class="favorites-header">
+        <h2 class="favorites-title">⭐ 我的收藏 ⭐</h2>
+        <button class="home-button" @click="router.push('/gallery')">
+          <span class="home-icon">🏠</span> 返回首页
+        </button>
+      </div>
       
       <!-- 收藏为空状态 - 提示用户去浏览角色 -->
       <div v-if="favorites.length === 0" class="empty-favorites">
@@ -36,7 +38,7 @@
       </div>
       
       <!-- 收藏列表 - 以网格布局展示角色卡片 -->
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div v-else class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         <CharacterCard 
           v-for="id in favorites" 
           :key="id" 
@@ -147,6 +149,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+
 /**
  * 收藏页面样式
  * 设计原则：
@@ -160,7 +163,10 @@ onMounted(async () => {
   max-width: 1200px;
   margin: 0 auto;
   min-height: calc(100vh - 60px);
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+  background: linear-gradient(135deg, #fff9f0 0%, #ffedd5 100%);
+  background-image: url('@/assets/favorites-bg-pattern.png');
+  background-size: 300px;
+  background-blend-mode: overlay;
 }
 
 .favorites-page h2 {
@@ -171,18 +177,6 @@ onMounted(async () => {
   display: inline-block;
 }
 
-.favorites-page h2::after {
-  content: '';
-  position: absolute;
-  bottom: -8px;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  transform: scaleX(0.5);
-  transform-origin: left;
-  transition: transform 0.3s ease;
-}
 
 .favorites-page h2:hover::after {
   transform: scaleX(1);
@@ -237,13 +231,23 @@ onMounted(async () => {
 /* 空收藏状态样式 - 使用精美的卡片设计 */
 .empty-favorites {
   text-align: center;
-  padding: 40px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  padding: 60px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 28px;
+  box-shadow: 0 12px 40px rgba(212, 156, 94, 0.15);
   max-width: 600px;
-  margin: 30px auto;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin: 50px auto;
+  border: 2px dashed #c87d90;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.empty-favorites::before {
+  content: '💖';
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 20px;
+  animation: pulse 1.5s ease infinite;
 }
 
 .empty-favorites:hover {
@@ -301,6 +305,81 @@ onMounted(async () => {
   margin-bottom: 25px;
 }
 
+/* 页面头部样式 */
+.favorites-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.favorites-title {
+  font-size: 2.6rem;
+  color: #5d2a18;
+  margin-bottom: 25px;
+  text-shadow: 3px 3px 6px rgba(0,0,0,0.15);
+  position: relative;
+  padding: 0 25px;
+  letter-spacing: 1px;
+}
+
+.home-button {
+  padding: 14px 28px;
+  background: linear-gradient(to right, #d49c5e, #c87d90);
+  color: white;
+  border: none;
+  border-radius: 60px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  box-shadow: 0 6px 20px rgba(212, 156, 94, 0.25);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.home-icon {
+  font-size: 1.2em;
+  transition: transform 0.3s ease;
+}
+
+.home-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(246, 173, 85, 0.4);
+  background: linear-gradient(to right, #f687b3, #f6ad55);
+}
+
+.home-button:hover .home-icon {
+  transform: scale(1.2);
+}
+
+/* 关闭按钮样式 - 与登录/注册页面一致 */
+.close-button {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #667eea;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  background: #667eea;
+  color: white;
+  transform: scale(1.1);
+}
+
 /* 按钮样式升级 */
 .login-btn, .gallery-btn {
   padding: 12px 28px;
@@ -313,8 +392,15 @@ onMounted(async () => {
   transition: all 0.3s ease;
   cursor: pointer;
   font-size: 1rem;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   margin: 10px 5px;
+}
+
+.gallery-btn .icon {
+  font-size: 1.2em;
+  transition: transform 0.3s ease;
 }
 
 .login-btn:hover, .gallery-btn:hover {
@@ -323,17 +409,45 @@ onMounted(async () => {
   background: linear-gradient(45deg, #2980b9, #3498db);
 }
 
-/* 角色网格布局增强 */
+.gallery-btn:hover .icon {
+  transform: translateX(-3px);
+}
+
+/* 角色网格布局 - 独特收藏样式 */
 .grid {
   display: grid;
-  gap: 25px;
-  margin-top: 20px;
+  gap: clamp(15px, 4vw, 20px);
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 35px;
+  margin: 35px 0;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 24px;
+  box-shadow: 
+    0 8px 35px rgba(212, 156, 94, 0.12),
+    0 12px 20px rgba(0,0,0,0.07);
+  border: 1px solid rgba(212, 156, 94, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.grid:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 12px 35px rgba(246, 173, 85, 0.15),
+    0 15px 20px rgba(0,0,0,0.08);
 }
 
 /* 添加页面进入动画 */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.8; }
 }
 
 .favorites-page > * {

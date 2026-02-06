@@ -80,13 +80,107 @@ const toggleFavorite = async () => {
 <style scoped>
 @import '../css/CharacterGallery.css';
 
-/* 添加点击反馈效果 */
+/* 基础卡片样式 - 限制最大宽度 */
 .character-card {
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  max-width: 280px; /* 限制卡片最大宽度 */
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  background: white;
 }
 
+/* 卡片悬停效果 */
 .character-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* 图片区域 - 固定比例 */
+.character-image {
+  position: relative;
+  height: 180px; /* 固定图片高度 */
+  overflow: hidden;
+}
+
+.character-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 保持图片比例 */
+  transition: transform 0.3s ease;
+}
+
+.character-card:hover .character-image img {
+  transform: scale(1.05);
+}
+
+/* 信息区域 - 紧凑布局 */
+.character-info {
+  padding: 15px;
+}
+
+.character-name {
+  font-size: 1.2rem;
+  margin: 0 0 8px 0;
+  color: #333;
+}
+
+.character-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* 元素和武器徽章 - 更紧凑的样式 */
+.element-badge, .weapon-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* 覆盖CharacterGallery.css中的样式 */
+.character-card {
+  margin: 0;
+}
+
+/* 星级和收藏按钮位置调整 */
+.character-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 100%);
+}
+
+.rarity-stars {
+  color: #ffd700;
+  font-size: 1rem;
+  text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.favorite-btn {
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.favorite-btn.active {
+  background: rgba(255, 215, 0, 0.8);
+  color: white;
 }
 </style>

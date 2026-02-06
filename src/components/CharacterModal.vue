@@ -266,4 +266,5 @@ const closeModal = () => {
 
 <style scoped>
 @import '../css/CharacterGallery.css';
+@import '../css/CharacterModal.css';
 </style>

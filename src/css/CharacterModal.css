@@ -1,0 +1,304 @@
+/* 模态框美化样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  animation: modalFadeIn 0.3s ease-out;
+}
+
+/* 添加关闭按钮样式 */
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background-color: rgba(255, 0, 0, 0.5);
+  color: white;
+  border: none;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 1001;
+}
+
+.close-button:hover {
+  background-color: rgba(255, 0, 0, 0.8);
+  transform: scale(1.1);
+}
+
+/* 模态框头部样式 */
+.modal-header {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  padding: 15px 20px 0px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.character-image-large {
+  width: 200px;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-right: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* 添加图片边框样式 */
+  border: 3px solid #363e5f;
+  border-radius: 12px;
+}
+
+.character-image-large img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.character-image-large:hover img {
+  transform: scale(1.05);
+}
+
+.character-details {
+  flex: 1;
+}
+
+.character-details h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* 角色元数据样式 */
+.character-meta-large {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.element-badge, .weapon-badge, .rarity-stars {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.rarity-stars {
+  color: #ffd700;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* 模态框标签页样式 */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid #eee;
+}
+
+.tabs button {
+  padding: 12px 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  border-bottom: 3px solid transparent;
+}
+
+.tabs button.active {
+  border-bottom-color: #667eea;
+  color: #667eea;
+  font-weight: 500;
+}
+
+.tabs button:hover:not(.active) {
+  background-color: #f5f5f5;
+}
+
+/* 标签页内容样式 */
+.tab-content {
+  padding: 20px;
+}
+
+.tab-pane h3 {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+/* 信息网格样式 */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.info-item {
+  background-color: #f9f9f9;
+  padding: 12px;
+  border-radius: 8px;
+  transition: transform 0.2s ease;
+}
+
+.info-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.info-label {
+  font-weight: 500;
+  color: #666;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.info-value {
+  color: #333;
+}
+
+/* 技能容器样式 */
+.skills-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.skill-item {
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.skill-item h4 {
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 1rem;
+}
+
+/* 材料列表样式 */
+.materials-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.materials-list li {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* 模态框底部按钮样式 */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 20px;
+  border-top: 1px solid #eee;
+  gap: 10px;
+}
+
+.modal-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.modal-btn:not(.close-btn) {
+  background-color: #667eea;
+  color: white;
+}
+
+.modal-btn:not(.close-btn):hover {
+  background-color: #764ba2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.close-btn {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.close-btn:hover {
+  background-color: #eee;
+}
+
+/* 动画效果 */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 收藏按钮样式 */
+.favorite-btn {
+  background: rgba(0,0,0,0.5);
+  border: none;
+  color: #ffd700;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 8px;
+}
+
+.favorite-btn.active {
+  background: rgba(255, 215, 0, 0.8);
+  color: white;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .modal-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .character-image-large {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+  
+  .character-meta-large {
+    justify-content: center;
+  }
+  
+  .tabs {
+    overflow-x: auto;
+  }
+}

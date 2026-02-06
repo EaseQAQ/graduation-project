@@ -2,6 +2,7 @@
   <div class="auth-container">
     <div class="auth-card">
       <h2 class="auth-title">用户注册</h2>
+      <button class="close-button" @click="router.push('/')">&times;</button>
       
       <form @submit.prevent="handleRegister" class="auth-form">
         <div class="form-group">
@@ -312,5 +313,32 @@ const handleRegister = async () => {
   background: linear-gradient(45deg, #667eea, #764ba2);
   opacity: 0.1;
   z-index: -1;
+}
+
+/* 退出按钮样式 */
+.close-button {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #667eea;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button:hover {
+  background: #667eea;
+  color: white;
+  transform: scale(1.1);
 }
 </style>
