@@ -1,0 +1,36 @@
+{
+  "name": "my-vue3-js-project",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "axios": "^1.13.4",
+    "axios-retry": "^4.5.0",
+    "bcryptjs": "^3.0.3",
+    "core-js": "^3.48.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "iconv-lite": "^0.7.2",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.16.3",
+    "pinia": "^3.0.4",
+    "vite-plugin-pwa": "^1.2.0",
+    "vue": "^3.5.24",
+    "vue-router": "^4.6.4",
+    "vuex": "^4.1.0",
+    "vuex-persistedstate": "^4.1.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.1",
+    "vite": "npm:rolldown-vite@7.2.5"
+  },
+  "overrides": {
+    "vite": "npm:rolldown-vite@7.2.5"
+  }
+}
