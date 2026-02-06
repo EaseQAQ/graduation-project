@@ -163,10 +163,7 @@ onMounted(async () => {
   max-width: 1200px;
   margin: 0 auto;
   min-height: calc(100vh - 60px);
-  background: linear-gradient(135deg, #fff9f0 0%, #ffedd5 100%);
-  background-image: url('@/assets/favorites-bg-pattern.png');
-  background-size: 300px;
-  background-blend-mode: overlay;
+  background: #f5f0e6; /* 米白色背景 */
 }
 
 .favorites-page h2 {

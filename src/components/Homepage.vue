@@ -10,8 +10,8 @@
   <div class="homepage">
     <div class="hero-section">
       <div class="hero-content">
-        <h1 class="hero-title">原神图鉴</h1>
-        <p class="hero-subtitle">探索《原神》中的所有角色</p>
+        <h1 class="hero-title">图鉴系统</h1>
+        <p class="hero-subtitle">探索<img src="/images/genshin.png" alt="Genshin Impact" class="logo-img">中的所有角色</p>
         
         <!-- 用户欢迎区域 - 已登录用户显示 -->
         <div v-if="isAuthenticated" class="user-welcome">
