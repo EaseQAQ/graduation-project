@@ -125,90 +125,192 @@ const handleRegister = async () => {
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 60px);
-  background-color: #f5f5f5;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .auth-card {
-  background: white;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+  transform: rotate(45deg);
+  z-index: -1;
 }
 
 .auth-title {
   text-align: center;
-  margin-bottom: 20px;
-  color: #333;
+  margin-bottom: 30px;
+  color: #2c3e50;
+  font-size: 2rem;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.auth-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 2px;
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
 }
 
 .form-group label {
-  font-weight: 500;
-  color: #555;
+  font-weight: 600;
+  color: #34495e;
+  font-size: 1rem;
 }
 
 .form-group input {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 15px;
+  border: 2px solid #e1e5eb;
+  border-radius: 12px;
   font-size: 16px;
+  transition: all 0.3s ease;
+  background: #f8fafc;
+  outline: none;
+}
+
+.form-group input:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background: white;
 }
 
 .auth-button {
-  padding: 12px;
-  background-color: #42b983;
+  padding: 16px;
+  background: linear-gradient(45deg, #667eea, #764ba2);
   color: white;
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+  position: relative;
+  overflow: hidden;
+  margin-top: 10px;
 }
 
 .auth-button:hover {
-  background-color: #359469;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(45deg, #764ba2, #667eea);
 }
 
 .auth-button:disabled {
-  background-color: #95d4b4;
+  background: linear-gradient(45deg, #bdc3c7, #95a5a6);
+  transform: none;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   cursor: not-allowed;
+}
+
+.auth-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: 0.5s;
+}
+
+.auth-button:hover::after {
+  left: 100%;
 }
 
 .auth-link {
   text-align: center;
-  margin-top: 15px;
-  color: #666;
+  margin-top: 20px;
+  color: #7f8c8d;
+  font-size: 0.95rem;
 }
 
 .auth-link a {
-  color: #42b983;
+  color: #667eea;
   text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 .auth-link a:hover {
+  color: #764ba2;
   text-decoration: underline;
 }
 
 .error-message {
-  color: #ff4444;
+  color: #e74c3c;
   text-align: center;
-  margin-top: 10px;
-  padding: 10px;
-  background-color: #ffebee;
-  border-radius: 4px;
+  margin-top: 15px;
+  padding: 15px;
+  background: linear-gradient(45deg, #ffebee, #fadbd8);
+  border-radius: 12px;
+  border-left: 4px solid #e74c3c;
+  animation: fadeIn 0.3s ease;
+}
+
+/* 添加输入框动画 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 添加页面进入动画 */
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-container {
+  animation: slideIn 0.6s ease forwards;
+}
+
+/* 添加一些装饰性元素 */
+.auth-card::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  opacity: 0.1;
+  z-index: -1;
 }
 </style>
