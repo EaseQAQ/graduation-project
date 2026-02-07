@@ -2,7 +2,7 @@
 const { exec } = require('child_process');
 const path = require('path');
 
-console.log('🚀 启动全栈开发环境...');
+console.log('启动全栈开发环境...');
 
 // 定义路径 (Windows兼容)
 const backendPath = path.join(__dirname, '../backend');
