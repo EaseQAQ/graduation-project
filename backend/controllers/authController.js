@@ -8,10 +8,29 @@ const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
     
+    // 参数验证
+    if (!username || !email || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '用户名、邮箱和密码都是必填项' 
+      });
+    }
+    
+    // 密码长度验证
+    if (password.length < 6) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '密码长度至少为6个字符' 
+      });
+    }
+    
     // 检查用户是否已存在
     const existingUser = await UserModel.findByEmail(email);
     if (existingUser) {
-      return res.status(400).json({ message: '用户已存在' });
+      return res.status(400).json({ 
+        success: false, 
+        message: '用户已存在' 
+      });
     }
     
     // 加密密码
@@ -29,13 +48,18 @@ const register = async (req, res) => {
     );
     
     res.status(201).json({ 
+      success: true,
       message: '注册成功',
       token,
       user: { id: userId, username, email }
     });
   } catch (error) {
     console.error('注册错误:', error);
-    res.status(500).json({ message: '服务器错误', error: error.message });
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器内部错误', 
+      error: error.message 
+    });
   }
 };
 
@@ -44,16 +68,30 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     
+    // 参数验证
+    if (!email || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '邮箱和密码都是必填项' 
+      });
+    }
+    
     // 检查用户是否存在
     const user = await UserModel.findByEmail(email);
     if (!user) {
-      return res.status(404).json({ message: '用户不存在' });
+      return res.status(404).json({ 
+        success: false, 
+        message: '用户不存在' 
+      });
     }
     
     // 验证密码
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: '密码错误' });
+      return res.status(401).json({ 
+        success: false, 
+        message: '密码错误' 
+      });
     }
     
     // 生成JWT令牌
@@ -64,13 +102,18 @@ const login = async (req, res) => {
     );
     
     res.status(200).json({
+      success: true,
       message: '登录成功',
       token,
       user: { id: user.id, username: user.username, email: user.email }
     });
   } catch (error) {
     console.error('登录错误:', error);
-    res.status(500).json({ message: '服务器错误', error: error.message });
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器内部错误', 
+      error: error.message 
+    });
   }
 };
 
@@ -81,10 +124,14 @@ const getCurrentUser = async (req, res) => {
     const user = await UserModel.findById(userId);
     
     if (!user) {
-      return res.status(404).json({ message: '用户不存在' });
+      return res.status(404).json({ 
+        success: false, 
+        message: '用户不存在' 
+      });
     }
     
     res.status(200).json({
+      success: true,
       user: {
         id: user.id,
         username: user.username,
@@ -94,7 +141,11 @@ const getCurrentUser = async (req, res) => {
     });
   } catch (error) {
     console.error('获取用户信息错误:', error);
-    res.status(500).json({ message: '服务器错误', error: error.message });
+    res.status(500).json({ 
+      success: false, 
+      message: '服务器内部错误', 
+      error: error.message 
+    });
   }
 };
 

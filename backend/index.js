@@ -32,10 +32,41 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: '服务器正常运行' });
 });
 
-// 错误处理中间件
+// 全局错误处理中间件
 app.use((err, req, res, next) => {
   console.error('全局错误:', err);
-  res.status(500).json({ message: '服务器错误', error: err.message });
+  
+  // 处理不同类型的错误
+  if (err.name === 'ValidationError') {
+    return res.status(400).json({ 
+      success: false, 
+      message: '数据验证失败', 
+      error: err.message 
+    });
+  }
+  
+  if (err.name === 'UnauthorizedError') {
+    return res.status(401).json({ 
+      success: false, 
+      message: '未授权访问', 
+      error: err.message 
+    });
+  }
+  
+  // 默认错误响应
+  res.status(500).json({ 
+    success: false, 
+    message: '服务器内部错误', 
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined 
+  });
+});
+
+// 404处理
+app.use('*', (req, res) => {
+  res.status(404).json({ 
+    success: false, 
+    message: '请求的资源不存在' 
+  });
 });
 
 // 启动服务器
@@ -47,6 +78,7 @@ async function startServer() {
     });
   } catch (error) {
     console.error('服务器启动错误:', error);
+    process.exit(1);
   }
 }
 
