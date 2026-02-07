@@ -152,11 +152,6 @@
  * - 实现角色详情查看模态框
  * - 管理用户认证状态
  * - 处理加载状态和错误情况
- * 
- * 依赖：
- * - vue: 核心框架
- * - vue-router: 页面导航
- * - pinia: 状态管理
  */
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
@@ -286,6 +281,11 @@ const logout = () => {
   router.push('/');
 };
 
+// 处理收藏切换
+const toggleFavorite = (character) => {
+  characterStore.toggleFavorite(character.id);
+};
+
 /**
  * 组件挂载时加载数据 - 在组件首次渲染时自动调用
  * 确保页面加载时就有角色数据显示
@@ -298,8 +298,8 @@ onMounted(() => {
   }
 });
 </script>
+
 <style lang="css" scoped>
 /* 导入角色图鉴专用样式 */
 @import '../css/CharacterGallery.css';
-
 </style>

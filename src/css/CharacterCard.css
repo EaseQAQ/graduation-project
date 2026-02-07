@@ -1,0 +1,248 @@
+/* CSS变量定义 */
+:root {
+  --card-primary: #ffffff;
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  --card-hover-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  --card-radius: 16px;
+  --transition-duration: 0.32s;
+  --border-highlight: rgba(255, 215, 0, 0.3);
+  --glow-intensity: 0.2;
+}
+
+/* 基础卡片样式 */
+.character-card {
+  cursor: pointer;
+  transition: 
+    transform var(--transition-duration) cubic-bezier(0.2, 0, 0.1, 1),
+    box-shadow var(--transition-duration) ease,
+    border-color 0.2s ease;
+  max-width: 280px;
+  width: 100%;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+  background: var(--card-primary);
+  position: relative;
+  transform-origin: center;
+  margin: 0;
+  background-color: rgba(255, 255, 255, 0.92);
+  border: 2px solid rgba(212, 165, 119, 0.2);
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  will-change: transform, box-shadow;
+  z-index: 1;
+}
+
+.character-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 50% 0%,
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity var(--transition-duration) ease;
+}
+
+.character-card:hover::before {
+  opacity: 1;
+}
+
+/* 卡片悬停效果 */
+.character-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 
+    var(--card-hover-shadow),
+    0 0 0 2px var(--border-highlight);
+  border-color: var(--border-highlight);
+  z-index: 2;
+}
+
+.character-card:active {
+  transform: translateY(-3px) scale(0.99);
+}
+
+/* 图片区域 - 固定比例 */
+.character-image {
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+}
+
+.character-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.4s ease;
+  filter: brightness(0.97);
+  transform-style: preserve-3d;
+}
+
+.character-card:hover .character-image img {
+  transform: scale(1.08);
+  filter: brightness(1.05);
+}
+
+/* 信息区域 */
+.character-info {
+  padding: 15px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.character-name {
+  font-size: 1.3em;
+  margin: 0 0 12px 0;
+  color: #3a2e27;
+  font-weight: 700;
+  flex-grow: 1;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.05);
+  letter-spacing: 0.02em;
+  transition: all 0.3s ease;
+}
+
+.character-card:hover .character-name {
+  color: #2a211b;
+  transform: translateX(2px);
+}
+
+.character-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* 元素和武器徽章 */
+.element-badge, .weapon-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* 星级和收藏按钮位置调整 */
+.character-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+  color: white;
+}
+
+.rarity-stars {
+  color: #ffd700;
+  font-size: 1.1rem;
+  text-shadow: 
+    0 0 8px rgba(255, 215, 0, 0.6),
+    0 1px 2px rgba(0,0,0,0.4);
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.character-card:hover .rarity-stars {
+  transform: scale(1.1);
+}
+
+/* 收藏按钮样式 */
+.favorite-btn {
+  background: none;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+  position: relative;
+  overflow: hidden;
+  margin-left: 8px;
+  color: #ffdb4d;
+  font-size: 1.3em;
+  text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.favorite-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, 
+    rgba(255, 215, 0, 0.2) 0%, 
+    transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.favorite-btn:hover::before {
+  opacity: 1;
+}
+
+.favorite-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.4);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%, -50%);
+  transform-origin: 50% 50%;
+}
+
+.favorite-btn:active::after {
+  animation: ripple 0.5s ease-out;
+}
+
+.favorite-btn.active {
+  color: #ff9900;
+  text-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(20, 20);
+    opacity: 0;
+  }
+}
+
+.favorite-btn:hover {
+  transform: scale(1.2);
+}
+
+/* 光晕动画效果 */
+@keyframes glow {
+  0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0), var(--card-hover-shadow); }
+  50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.3), var(--card-hover-shadow); }
+  100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0), var(--card-hover-shadow); }
+}
+
+.character-card:hover {
+  animation: glow 2s ease-in-out infinite;
+  border-color: var(--border-highlight);
+  z-index: 2;
+}
