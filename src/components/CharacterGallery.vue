@@ -10,7 +10,7 @@
     - 详情模态框：点击角色卡片时显示详细信息
     - 加载状态和错误处理
   -->
-  <div class="character-gallery">
+  <div class="character-gallery" :class="{ 'modal-active': selectedCharacter }">
     <h1 class="gallery-title">原神角色图鉴</h1>
     
     <!-- 加载状态 -->
