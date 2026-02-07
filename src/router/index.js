@@ -2,8 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Homepage from '../components/Homepage.vue';
 import CharacterGallery from '../components/CharacterGallery.vue';
 import Favorites from '../views/Favorites.vue';
-import Login from '../views/Login.vue';  // 新增
-import Register from '../views/Register.vue';  // 新增
+import Login from '../views/Login.vue';  
+import Register from '../views/Register.vue';  
 
 const routes = [
   {
@@ -22,13 +22,13 @@ const routes = [
     component: Favorites,
     meta: { requiresAuth: true }  // 添加认证要求
   },
-  {  // 新增登录路由
+  {  
     path: '/login',
     name: 'Login',
     component: Login,
     meta: { guestOnly: true }
   },
-  {  // 新增注册路由
+  {  
     path: '/register',
     name: 'Register',
     component: Register,
