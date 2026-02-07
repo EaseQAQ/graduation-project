@@ -39,20 +39,35 @@ api.interceptors.response.use(
 const authService = {
   // 用户注册
   register: async (userData) => {
-    const response = await api.post('/auth/register', userData);
-    return response.data;
+    try {
+      const response = await api.post('/auth/register', userData);
+      return response.data;
+    } catch (error) {
+      console.error('注册失败:', error);
+      throw error;
+    }
   },
 
   // 用户登录
   login: async (credentials) => {
-    const response = await api.post('/auth/login', credentials);
-    return response.data;
+    try {
+      const response = await api.post('/auth/login', credentials);
+      return response.data;
+    } catch (error) {
+      console.error('登录失败:', error);
+      throw error;
+    }
   },
 
   // 获取当前用户信息
   getCurrentUser: async () => {
-    const response = await api.get('/auth/me');
-    return response.data;
+    try {
+      const response = await api.get('/auth/me');
+      return response.data;
+    } catch (error) {
+      console.error('获取用户信息失败:', error);
+      throw error;
+    }
   },
 
   // 用户登出

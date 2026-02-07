@@ -22,7 +22,7 @@
     <!-- 错误状态 -->
     <div v-else-if="characterStore.error" class="error-state">
       <p class="error-message">{{ characterStore.error }}</p>
-      <button @click="characterStore.loadCharacters" class="retry-btn">重试加载</button>
+      <button @click="retryLoading" class="retry-btn">重试加载</button>
     </div>
     
     <!-- 认证提示区域 - 未登录用户显示 -->
@@ -221,6 +221,13 @@ const resetFilters = () => {
 const searchKeyword = ref('');
 
 /**
+ * 重试加载数据
+ */
+const retryLoading = () => {
+  characterStore.loadCharacters();
+};
+
+/**
  * 计算属性：根据筛选条件和搜索关键词过滤角色
  * 动态计算符合当前筛选条件和搜索关键词的角色列表
  * @returns {Array} 符合条件的角色数组
@@ -244,7 +251,7 @@ const filteredCharacters = computed(() => {
       (char.region && char.region.toLowerCase().includes(searchKeyword.value.toLowerCase())) ||
       (char.voice_actor_cn && char.voice_actor_cn.toLowerCase().includes(searchKeyword.value.toLowerCase())) ||
       (char.voice_actor_jp && char.voice_actor_jp.toLowerCase().includes(searchKeyword.value.toLowerCase()));
-    
+
     return matchesElement && matchesRegion && matchesRarity && matchesWeapon && matchesSearch;
   });
 });

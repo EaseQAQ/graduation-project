@@ -19,13 +19,16 @@ export const useCharacterStore = defineStore('characters', {
         this.characters = res.data;
       } catch (err) {
         console.error('Failed to load characters:', err);
-        this.error = err.message;
+        this.error = err.response?.data?.message || err.message || '加载角色数据失败';
         // Fallback to local JSON if API fails
         try {
           const localRes = await fetch('/data/temp_characters.json');
-          this.characters = await localRes.json();
+          if (localRes.ok) {
+            this.characters = await localRes.json();
+          }
         } catch (fallbackErr) {
           console.error('Failed to load local characters:', fallbackErr);
+          this.error = this.error || '无法加载本地角色数据';
         }
       } finally {
         this.isLoading = false;
@@ -60,7 +63,7 @@ export const useCharacterStore = defineStore('characters', {
         return res.data;
       } catch (err) {
         console.error(`Failed to load character ${id}:`, err);
-        this.error = err.message;
+        this.error = err.response?.data?.message || err.message || '加载角色详情失败';
         return null;
       } finally {
         this.isLoading = false;
@@ -88,6 +91,7 @@ export const useCharacterStore = defineStore('characters', {
         localStorage.setItem('favorites', JSON.stringify(this.favorites));
       } catch (error) {
         console.error('Failed to toggle favorite:', error);
+        // 如果操作失败，恢复原来的收藏状态
         throw error;
       }
     },
