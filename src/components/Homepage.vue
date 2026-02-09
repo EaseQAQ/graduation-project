@@ -84,7 +84,7 @@ const goToRegister = () => {
 
 /**
  * 退出登录功能
- * 功能：清除本地存储的用户信息和令牌，重定向到首页并刷新页面
+ * 功能：清除本地存储的用户信息和令牌，重定向到首页
  */
 const logout = () => {
   // 清除所有相关的本地存储数据
@@ -92,8 +92,8 @@ const logout = () => {
   localStorage.removeItem('user');
   localStorage.removeItem('favorites');
   
-  // 重定向到首页并强制刷新页面
-  window.location.href = '/';
+  // 使用路由器导航到首页（不刷新页面）
+  router.push('/');
 };
 </script>
 

@@ -47,11 +47,12 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import authService from '../services/authService';
 import { useCharacterStore } from '../stores/characterStore';
 
 const router = useRouter();
+const route = useRoute(); // 获取当前路由信息
 const store = useCharacterStore();
 const credentials = ref({ email: '', password: '' });
 const isLoading = ref(false);
@@ -94,8 +95,11 @@ const handleLogin = async (event) => {
     // 加载用户收藏
     await store.loadFavorites();
     
-    // 导航到首页
-    router.push('/');
+    // 获取重定向路径，如果没有则默认到首页
+    const redirectPath = route.query.redirect || '/';
+    
+    // 导航到登录前的页面
+    router.push(redirectPath);
   });
   
   try {

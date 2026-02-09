@@ -47,10 +47,12 @@ router.beforeEach((to, from, next) => {
   
   // 检查是否需要认证
   if (to.meta.requiresAuth && !isAuthenticated) {
-    next('/login');
+    // 保存用户想要访问的路径，登录后重定向回去
+    next({ path: '/login', query: { redirect: to.fullPath } });
   } 
   // 检查是否只允许访客访问
   else if (to.meta.guestOnly && isAuthenticated) {
+    // 如果已登录用户访问登录/注册页面，重定向到首页
     next('/');
   } 
   else {
