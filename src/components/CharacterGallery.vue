@@ -153,7 +153,7 @@
  * - 管理用户认证状态
  * - 处理加载状态和错误情况
  */
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useCharacterStore } from '../stores/characterStore';
 import CharacterCard from './CharacterCard.vue';
@@ -292,6 +292,19 @@ const logout = () => {
 const toggleFavorite = (character) => {
   characterStore.toggleFavorite(character.id);
 };
+
+/**
+ * 监听 selectedCharacter 的变化，控制背景滚动
+ */
+watch(selectedCharacter, (newVal) => {
+  if (newVal) {
+    // 打开模态框时，禁用背景滚动
+    document.body.style.overflow = 'hidden';
+  } else {
+    // 关闭模态框时，恢复背景滚动
+    document.body.style.overflow = 'auto';
+  }
+});
 
 /**
  * 组件挂载时加载数据 - 在组件首次渲染时自动调用

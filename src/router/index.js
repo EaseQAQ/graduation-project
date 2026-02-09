@@ -58,4 +58,10 @@ router.beforeEach((to, from, next) => {
   }
 });
 
+// 全局后置钩子 - 页面切换时滚动到顶部
+router.afterEach(() => {
+  // 滚动到页面顶部
+  window.scrollTo(0, 0);
+});
+
 export default router;

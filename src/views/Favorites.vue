@@ -46,14 +46,12 @@
           @click="viewCharacterDetails(id)"
         />
       </div>
-      
-      <!-- 角色详情模态框 -->
-      <CharacterModal 
+    </div>
+    <CharacterModal 
         v-if="selectedCharacter" 
         :character="selectedCharacter"
         @close="closeModal"
       />
-    </div>
   </div>
 </template>
 
@@ -72,7 +70,7 @@
  * - CharacterCard: 角色卡片组件
  */
 import { useCharacterStore } from '../stores/characterStore';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import CharacterCard from '../components/CharacterCard.vue';
 import CharacterModal from '../components/CharacterModal.vue';
@@ -131,6 +129,19 @@ const goToGallery = () => {
 };
 
 /**
+ * 监听 selectedCharacter 的变化，控制背景滚动
+ */
+watch(selectedCharacter, (newVal) => {
+  if (newVal) {
+    // 打开模态框时，禁用背景滚动
+    document.body.style.overflow = 'hidden';
+  } else {
+    // 关闭模态框时，恢复背景滚动
+    document.body.style.overflow = 'auto';
+  }
+});
+
+/**
  * 组件挂载时执行 - 确保数据已加载
  * 功能：
  * - 如果角色数据为空，加载角色数据
@@ -149,6 +160,9 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+
+@import '../css/Favorites.css';
+
 
 /**
  * 收藏页面样式

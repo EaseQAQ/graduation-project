@@ -8,9 +8,18 @@
       <button class="close-button" @click="closeModal">&times;</button>
       
       <div class="modal-header">
-        <div class="character-image-large">
-          <img :src="character.image" :alt="character.name" />
-        </div>
+<div class="character-image-container">
+  <div class="character-image-large" @click="toggleImagePreview">
+    <img 
+      :src="character.image" 
+      :alt="character.name"
+      :class="{ 'preview-mode': isImagePreview }"
+    />
+  </div>
+  <div v-if="isImagePreview" class="fullscreen-preview" @click="toggleImagePreview">
+    <img :src="character.image" :alt="character.name" />
+  </div>
+</div>
         <div class="character-details">
           <h2>{{ character.name }}</h2>
           <div class="character-meta-large">
@@ -259,12 +268,34 @@ const goToFavorites = () => {
 }
 
 // 关闭模态框
+const isImagePreview = ref(false)
+
+const toggleImagePreview = () => {
+  isImagePreview.value = !isImagePreview.value
+}
+
 const closeModal = () => {
+  isImagePreview.value = false
   emit('close')
 }
 </script>
 
-<style scoped>
-@import '../css/CharacterGallery.css';
+<style>
 @import '../css/CharacterModal.css';
+@import '../css/CharacterGallery.css';
+
+/* 模态框覆盖层，确保覆盖整个视图 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
 </style>

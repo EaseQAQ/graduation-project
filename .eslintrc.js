@@ -1,8 +1,7 @@
 module.exports = {
   extends: [
     'eslint:recommended',
-    '@vue/eslint-config-standard',
-    '@vue/eslint-config-typescript'
+    '@vue/eslint-config-standard'
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
