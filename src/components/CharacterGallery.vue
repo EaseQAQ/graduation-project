@@ -11,7 +11,7 @@
     - 加载状态和错误处理
   -->
   <div class="character-gallery" :class="{ 'modal-active': selectedCharacter }">
-    <h1 class="gallery-title">原神角色图鉴</h1>
+    <h1 class="gallery-title" aria-label="原神角色图鉴" role="heading">原神角色图鉴</h1>
     
     <!-- 加载状态 -->
     <div v-if="characterStore.isLoading" class="loading-state">

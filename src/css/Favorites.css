@@ -8,25 +8,42 @@
  */
 .favorites-page {
   padding: 30px;
+  padding-top: 0;
   max-width: 1200px;
   margin: 0 auto;
   min-height: calc(100vh - 60px);
-  background: linear-gradient(135deg, #fff9f0 0%, #ffedd5 100%);
-  background-image: url('@/assets/favorites-bg-pattern.png');
-  background-size: 300px;
-  background-blend-mode: overlay;
-}
-
-.favorites-page h2 {
-  font-size: 2rem;
-  color: #2c3e50;
-  margin-bottom: 25px;
+  background: linear-gradient(135deg, #ffcc99 0%, #ff9966 100%);
+  background-image: 
+    url('@/assets/favorites-bg-pattern.png'),
+    radial-gradient(circle at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 20%);
+  background-size: 300px, auto;
+  background-blend-mode: overlay, overlay;
   position: relative;
-  display: inline-block;
+  overflow: hidden;
 }
 
-.favorites-page h2:hover::after {
-  transform: scaleX(1);
+.favorites-page::before {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(212,156,94,0.1) 0%, transparent 70%);
+  z-index: 0;
+  animation: float 8s ease-in-out infinite alternate;
+}
+
+.favorites-page::after {
+  content: '';
+  position: absolute;
+  bottom: 100px;
+  left: -100px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(200,125,144,0.1) 0%, transparent 70%);
+  z-index: 0;
+  animation: float 12s ease-in-out infinite alternate-reverse;
 }
 
 /* 加载状态样式 - 带更精美的动画 */
@@ -35,12 +52,28 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 400px;
-  background: rgba(255,255,255,0.8);
-  border-radius: 12px;
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  min-height: 500px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 20px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 12px 40px rgba(212, 156, 94, 0.15),
+    0 16px 25px rgba(0,0,0,0.08);
+  border: 1px solid rgba(212, 156, 94, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #d49c5e, #c87d90);
+  animation: loading-progress 2s ease infinite;
 }
 
 .loading-spinner {
@@ -79,78 +112,149 @@
 /* 空收藏状态样式 - 使用精美的卡片设计 */
 .empty-favorites {
   text-align: center;
-  padding: 60px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 28px;
-  box-shadow: 0 12px 40px rgba(212, 156, 94, 0.15);
-  max-width: 600px;
-  margin: 50px auto;
-  border: 2px dashed #c87d90;
-  transition: all 0.3s ease;
+  padding: 70px;
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 32px;
+  box-shadow: 
+    0 15px 50px rgba(212, 156, 94, 0.2),
+    0 20px 30px rgba(0,0,0,0.08);
+  max-width: 650px;
+  margin: 60px auto;
+  border: 2px dashed #d49c5e;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
+  overflow: hidden;
+  will-change: transform, box-shadow;
 }
 
 .empty-favorites::before {
   content: '💖';
-  font-size: 3rem;
+  font-size: 3.5rem;
   display: block;
-  margin-bottom: 20px;
-  animation: pulse 1.5s ease infinite;
+  margin-bottom: 25px;
+  animation: pulse 1.8s ease infinite;
+  text-shadow: 0 0 15px rgba(212, 156, 94, 0.3);
+}
+
+.empty-favorites::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, #d49c5e, #c87d90);
+  animation: progress 3s ease infinite;
 }
 
 .empty-favorites:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 
+    0 20px 60px rgba(212, 156, 94, 0.25),
+    0 25px 35px rgba(0,0,0,0.1);
+  border-color: #c87d90;
 }
 
 .empty-favorites p {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: #34495e;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
 }
 
 /* 更精美的按钮样式，带渐变效果和悬停动画 */
 .browse-link {
   display: inline-block;
-  padding: 12px 28px;
+  padding: 14px 32px;
   background: linear-gradient(45deg, #667eea, #764ba2);
   color: white;
   text-decoration: none;
-  border-radius: 30px;
-  font-weight: 500;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-  transition: all 0.3s ease;
+  border-radius: 32px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   border: none;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.browse-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, #764ba2, #667eea);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .browse-link:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
   background: linear-gradient(45deg, #764ba2, #667eea);
 }
 
-/* 认证提示区域 - 增加视觉吸引力 */
+.browse-link:hover::before {
+  opacity: 1;
+}
+
+/* 认证提示区域 - 精美设计 */
 .auth-required {
   text-align: center;
-  padding: 50px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-  max-width: 600px;
-  margin: 40px auto;
+  padding: 60px;
+  background: linear-gradient(135deg, #ffcc99 0%, #ff9966 100%);
+  border-radius: 24px;
+  box-shadow: 
+    0 12px 40px rgba(212, 156, 94, 0.15),
+    0 16px 25px rgba(0,0,0,0.08);
+  max-width: 650px;
+  margin: 60px auto;
+  border: 1px solid rgba(212, 156, 94, 0.2);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-required::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(90deg, #d49c5e, #c87d90);
+}
+
+.auth-required:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 16px 50px rgba(212, 156, 94, 0.2),
+    0 20px 30px rgba(0,0,0,0.1);
 }
 
 .auth-required h2 {
-  font-size: 1.8rem;
+  font-size: 2rem;
   color: #2c3e50;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  background: linear-gradient(90deg, #5d2a18 0%, #8b4513 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .auth-required p {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: #7f8c8d;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+  line-height: 1.6;
 }
 
 /* 页面头部样式 */
@@ -163,13 +267,36 @@
 }
 
 .favorites-title {
-  font-size: 2.6rem;
-  color: #5d2a18;
-  margin-bottom: 25px;
-  text-shadow: 3px 3px 6px rgba(0,0,0,0.15);
+  font-size: 3.2rem;
+  margin-bottom: 30px;
+  text-shadow: 4px 4px 8px rgba(0,0,0,0.1);
   position: relative;
-  padding: 0 25px;
   letter-spacing: 1px;
+  background: linear-gradient(90deg, #5d2a18 0%, #8b4513 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition: all 0.3s ease;
+  display: inline-block;
+  animation: textGlow 4s ease-in-out infinite alternate;
+  will-change: text-shadow;
+}
+
+.favorites-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 25px;
+  right: 25px;
+  height: 4px;
+  background: linear-gradient(90deg, #d49c5e, #c87d90);
+  border-radius: 2px;
+  transform: scaleX(0.8);
+  transition: transform 0.3s ease;
+}
+
+.favorites-title:hover::after {
+  transform: scaleX(1);
 }
 
 .home-button {
@@ -204,32 +331,8 @@
   transform: scale(1.2);
 }
 
-/* 关闭按钮样式 - 与登录/注册页面一致 */
-.close-button {
-  width: 30px;
-  height: 30px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  color: #667eea;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.close-button:hover {
-  background: #667eea;
-  color: white;
-  transform: scale(1.1);
-}
-
 /* 按钮样式升级 */
-.login-btn, .gallery-btn {
+.login-btn {
   padding: 12px 28px;
   background: linear-gradient(45deg, #3498db, #2980b9);
   color: white;
@@ -246,45 +349,76 @@
   margin: 10px 5px;
 }
 
-.gallery-btn .icon {
-  font-size: 1.2em;
-  transition: transform 0.3s ease;
-}
-
-.login-btn:hover, .gallery-btn:hover {
+.login-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
   background: linear-gradient(45deg, #2980b9, #3498db);
 }
 
-.gallery-btn:hover .icon {
-  transform: translateX(-3px);
-}
-
 /* 角色网格布局 - 独特收藏样式 */
 .grid {
-  display: grid;
-  gap: clamp(15px, 4vw, 20px);
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 35px;
-  margin: 35px 0;
-  padding: 30px;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin: 35px auto;
+  padding: 40px;
+  max-width: 1200px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 28px;
   box-shadow: 
-    0 8px 35px rgba(212, 156, 94, 0.12),
-    0 12px 20px rgba(0,0,0,0.07);
-  border: 1px solid rgba(212, 156, 94, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+    0 12px 45px rgba(212, 156, 94, 0.15),
+    0 16px 25px rgba(0,0,0,0.08),
+    inset 0 0 50px rgba(255, 236, 213, 0.15);
+  border: 1px solid rgba(212, 156, 94, 0.25);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  perspective: 1000px;
+  position: relative;
+  animation: gridEnter 0.8s ease-out forwards;
+}
+
+@keyframes gridEnter {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  100% {
+    transform: translate(20px, 20px) rotate(5deg);
+  }
+}
+
+@keyframes textGlow {
+  0% {
+    text-shadow: 0 0 5px rgba(93, 42, 24, 0.15);
+  }
+  100% {
+    text-shadow: 0 0 10px rgba(212, 156, 94, 0.3);
+  }
+}
+
+.grid-item {
+  flex: 0 0 calc(25% - 30px);
+  max-width: calc(25% - 30px);
+  min-width: 260px;
 }
 
 .grid:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px) scale(1.005);
   box-shadow: 
-    0 12px 35px rgba(246, 173, 85, 0.15),
-    0 15px 20px rgba(0,0,0,0.08);
+    0 16px 45px rgba(246, 173, 85, 0.2),
+    0 20px 25px rgba(0,0,0,0.1);
 }
 
 /* 添加页面进入动画 */
@@ -297,6 +431,11 @@
   0% { transform: scale(1); opacity: 0.8; }
   50% { transform: scale(1.1); opacity: 1; }
   100% { transform: scale(1); opacity: 0.8; }
+}
+
+@keyframes loading-progress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 .favorites-page > * {

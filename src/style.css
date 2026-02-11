@@ -1,16 +1,30 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --primary-color:   #6471ff;
+  --secondary-color: #ff3687; 
+  --text-primary: rgba(255, 255, 255, 0.95);
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  line-height: 1.65;
+  font-weight: 450;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--text-primary);
+  background: 
+    radial-gradient(ellipse at top, #2d2d42 0%, #1e1e2f 80%) fixed,
+    linear-gradient(125deg, var(--primary-color) 0%, var(--secondary-color) 100%) fixed;
+  background-blend-mode: overlay;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1, "ss01" 1, "ss02" 1;
+  
+  /* 统一的动画曲线 */
+  --ease-elastic: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+  --ease-smooth: cubic-bezier(0.48, 0.04, 0.22, 1);
+  --transition-duration: 0.32s;
 }
 
 a {
@@ -28,6 +42,13 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  background-attachment: fixed;
+  transition: all var(--transition-duration) var(--ease-smooth);
+  /* 添加纹理效果 */
+  background-image: 
+    radial-gradient(circle at center, 
+      rgba(255,255,255,0.02) 0%, 
+      transparent 70%);
 }
 
 h1 {
@@ -36,15 +57,49 @@ h1 {
 }
 
 button {
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 0.7em 1.4em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: rgba(30, 30, 47, 0.42);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: 
+    all var(--transition-duration) var(--ease-smooth),
+    backdrop-filter 0.4s ease;
+  will-change: transform, box-shadow, backdrop-filter;
+  color: var(--text-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+button::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255,255,255,0.1),
+    rgba(255,255,255,0.05) 50%,
+    transparent
+  );
+  transform: rotate(30deg);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+button:hover::after {
+  opacity: 1;
+}
+
+button:active {
+  transform: scale(0.98);
 }
 button:hover {
   border-color: #646cff;

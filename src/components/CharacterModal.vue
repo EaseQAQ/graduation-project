@@ -5,7 +5,7 @@
     v-if="character"
   >
     <div class="modal-content" @click.stop>
-      <button class="close-button" @click="closeModal">&times;</button>
+      <button class="close-button" @click="closeModal" aria-label="关闭详情">&times;</button>
       
       <div class="modal-header">
 <div class="character-image-container">
@@ -284,18 +284,4 @@ const closeModal = () => {
 @import '../css/CharacterModal.css';
 @import '../css/CharacterGallery.css';
 
-/* 模态框覆盖层，确保覆盖整个视图 */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  animation: fadeIn 0.3s ease;
-}
 </style>
