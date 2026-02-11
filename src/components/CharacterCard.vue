@@ -38,6 +38,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useCharacterStore } from '../stores/characterStore'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
   character: {
@@ -47,6 +48,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['click', 'favorite', 'img-loaded'])
+const router = useRouter()
 
 const imgLoaded = ref(false)
 const onImgLoad = () => {
@@ -67,9 +69,14 @@ const elementClassMap = {
   '草元素': 'Dendro'
 }
 
-// 计算属性：检查角色是否已收藏
+// 检查用户是否已登录
+const isAuthenticated = computed(() => {
+  return !!localStorage.getItem('token')
+})
+
+// 计算属性：检查角色是否已收藏（仅在登录状态下有效）
 const isFavorite = computed(() => {
-  return characterStore.isCharacterFavorite(props.character.id)
+  return isAuthenticated.value && characterStore.isCharacterFavorite(props.character.id)
 })
 
 // 处理点击事件
@@ -79,6 +86,12 @@ const handleClick = () => {
 
 // 切换收藏状态
 const toggleFavorite = async () => {
+  if (!isAuthenticated.value) {
+    // 用户未登录，跳转到登录页面
+    router.push('/login')
+    return
+  }
+  
   try {
     await characterStore.toggleFavorite(props.character.id)
     emit('favorite', props.character.id)

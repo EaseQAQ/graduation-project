@@ -163,14 +163,15 @@
         
         <!-- 模态框底部操作按钮 -->
         <div class="modal-footer">
-          <button @click="goToFavorites" class="modal-btn">查看我的收藏</button>
+          <button @click="toggleFavorite" :class="['modal-btn', isFavorited ? 'favorited' : '']">
+            {{ isFavorited ? '已收藏' : '收藏' }}
+          </button>
           <button @click="closeModal" class="modal-btn close-btn">关闭</button>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
@@ -184,7 +185,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close'])
-
 const router = useRouter()
 const characterStore = useCharacterStore()
 
@@ -260,9 +260,33 @@ const processMaterials = (materials) => {
   return []
 }
 
-// 导航到收藏页面
-const goToFavorites = () => {
-  router.push('/favorites')
+// 检查用户是否已登录
+const isAuthenticated = computed(() => {
+  return !!localStorage.getItem('token')
+})
+
+// 检查当前角色是否已收藏（仅在登录状态下有效）
+const isFavorited = computed(() => {
+  return isAuthenticated.value && characterStore.isCharacterFavorite(props.character.id)
+})
+
+// 切换收藏状态
+const toggleFavorite = async () => {
+  if (!isAuthenticated.value) {
+    // 用户未登录，跳转到登录页面
+    // 确保在跳转前恢复页面滚动
+    document.body.style.overflow = 'auto'
+    emit('close')
+    router.push('/login')
+    return
+  }
+  
+  try {
+    await characterStore.toggleFavorite(props.character.id)
+  } catch (error) {
+    console.error('Failed to toggle favorite:', error)
+    alert('收藏操作失败，请重试')
+  }
 }
 
 // 关闭模态框
