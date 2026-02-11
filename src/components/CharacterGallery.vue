@@ -40,21 +40,17 @@
       <div class="filters-panel">
         <div class="filters-header">
           <h3>筛选角色</h3>
+          <!-- 搜索框 -->
+          <div class="search-group">
+            <label for="search-input">关键词搜索:</label>
+            <input id="search-input"
+              type="text"
+              v-model="searchKeyword"
+              placeholder="输入角色名、元素或技能关键词..."
+              class="search-input"/>
+          </div>
           <button @click="resetFilters" class="reset-filters">重置筛选</button>
         </div>
-        
-        <!-- 搜索框 -->
-        <div class="search-group">
-          <label for="search-input">关键词搜索:</label>
-          <input 
-            id="search-input"
-            type="text"
-            v-model="searchKeyword"
-            placeholder="输入角色名、元素或技能关键词..."
-            class="search-input"
-          />
-        </div>
-        
         <!-- 多条件筛选功能 - 提供元素、地区、武器、星级四种筛选条件 -->
         <div class="filters-container">
           <div class="filter-group">

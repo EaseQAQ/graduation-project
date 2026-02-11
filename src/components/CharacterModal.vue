@@ -5,8 +5,6 @@
     v-if="character"
   >
     <div class="modal-content" @click.stop>
-      <button class="close-button" @click="closeModal" aria-label="关闭详情">&times;</button>
-      
       <div class="modal-header">
 <div class="character-image-container">
   <div class="character-image-large" @click="toggleImagePreview">

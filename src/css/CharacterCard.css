@@ -3,7 +3,8 @@
   --card-primary: #ffffff;
   --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   --card-hover-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
-  --card-radius: 16px;
+  --card-radius: 20px;
+  --image-radius: 20px 20px 0 0;
   --transition-duration: 0.32s;
   --border-highlight: rgba(255, 215, 0, 0.3);
   --glow-intensity: 0.2;
@@ -15,7 +16,8 @@
   transition: 
     transform var(--transition-duration) cubic-bezier(0.2, 0, 0.1, 1),
     box-shadow var(--transition-duration) ease,
-    border-color 0.2s ease;
+    border-color 0.2s ease,
+    border-radius 0.2s ease;
   max-width: 280px;
   width: 100%;
   border-radius: var(--card-radius);
@@ -27,6 +29,7 @@
   margin: 0;
   background-color: rgba(255, 255, 255, 0.92);
   border: 2px solid rgba(212, 165, 119, 0.2);
+  border-radius: 20px;
   transition: all 0.3s ease;
   height: 100%;
   display: flex;
@@ -56,9 +59,7 @@
 .character-card:hover {
   transform: translateY(-8px) scale(1.03);
   box-shadow: 
-    var(--card-hover-shadow),
-    0 0 0 2px var(--border-highlight);
-  border-color: var(--border-highlight);
+    var(--card-hover-shadow);
   z-index: 2;
 }
 
@@ -71,6 +72,7 @@
   position: relative;
   height: 180px;
   overflow: hidden;
+  background: linear-gradient(45deg, #f9f9f9, #ececec);
 }
 
 .character-image img {
@@ -79,9 +81,15 @@
   object-fit: cover;
   transition: 
     transform 0.6s cubic-bezier(0.16, 1, 0.3, 1),
-    filter 0.4s ease;
+    filter 0.4s ease,
+    opacity 0.3s ease;
   filter: brightness(0.97);
   transform-style: preserve-3d;
+  opacity: 0;
+}
+
+.character-image img.loaded {
+  opacity: 1;
 }
 
 .character-card:hover .character-image img {
@@ -121,10 +129,28 @@
 
 /* 元素和武器徽章 */
 .element-badge, .weapon-badge {
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 0.85rem;
-  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 16px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.2);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.element-badge {
+  margin-right: 5px;
+}
+
+.weapon-badge {
+  background: linear-gradient(145deg, #4b79a1, #5f84a8);
+}
+
+.character-card:hover .element-badge,
+.character-card:hover .weapon-badge {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15), 
+              inset 0 1px 2px rgba(255,255,255,0.3);
 }
 
 /* 星级和收藏按钮位置调整 */
@@ -235,14 +261,6 @@
 }
 
 /* 光晕动画效果 */
-@keyframes glow {
-  0% { box-shadow: 0 0 5px rgba(255, 215, 0, 0), var(--card-hover-shadow); }
-  50% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.3), var(--card-hover-shadow); }
-  100% { box-shadow: 0 0 5px rgba(255, 215, 0, 0), var(--card-hover-shadow); }
-}
-
 .character-card:hover {
-  animation: glow 2s ease-in-out infinite;
-  border-color: var(--border-highlight);
   z-index: 2;
 }

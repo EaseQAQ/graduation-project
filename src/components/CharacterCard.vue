@@ -9,6 +9,7 @@
         :alt="character.name" 
         loading="lazy" 
         @load="onImgLoad"
+        :class="{ 'loaded': imgLoaded }"
       />
       <div class="character-overlay">
         <span class="rarity-stars">{{ '★'.repeat(character.rarity) }}</span>
