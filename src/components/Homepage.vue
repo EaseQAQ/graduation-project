@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <!-- 
     首页组件
     功能：展示应用首页，包含登录/注册入口、用户欢迎信息和角色图鉴导航
@@ -47,7 +47,6 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-
 // 路由器实例 - 用于页面导航
 const router = useRouter();
 
@@ -55,7 +54,7 @@ const router = useRouter();
  * 用户认证状态 - 从localStorage获取
  * 判断用户是否已登录
  */
-const isAuthenticated = !!localStorage.getItem('token');
+const isAuthenticated = ref(!!localStorage.getItem('token'));
 const currentUser = ref(JSON.parse(localStorage.getItem('user')) || {});
 
 /**
@@ -91,6 +90,10 @@ const logout = () => {
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   localStorage.removeItem('favorites');
+  
+  // 更新响应式状态
+  isAuthenticated.value = false;
+  currentUser.value = {};
   
   // 使用路由器导航到首页（不刷新页面）
   router.push('/');
