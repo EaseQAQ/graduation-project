@@ -9,7 +9,8 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Homepage
+    component: Homepage,
+    meta: { requiresAuth: true }
   },
   {
     path: '/gallery',

@@ -1,3 +1,17 @@
+-- Table: users
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `users` (`id`, `username`, `email`, `password`) VALUES (1, 'Ease', '2119318733@qq.com', '$2b$10$SKbEn7JsQcONMFUT/E762ObuYxw4rjKhCIyZuCi7prEmef/EYOb0a');
+INSERT INTO `users` (`id`, `username`, `email`, `password`) VALUES (3, '安逸QAQ', '14789509113@sina.com', '$2b$10$pcrtuP1rR2MiwwDYLZejrO5Z6aT6BjBcZYXkYMk9G5vWwISE1GCNS');
+
 -- Table: characters
 CREATE TABLE IF NOT EXISTS `characters` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -126,7 +140,6 @@ CREATE TABLE IF NOT EXISTS `favorites` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int NOT NULL,
   `character_id` int NOT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_user_character` (`user_id`,`character_id`),
   KEY `character_id` (`character_id`),
@@ -134,36 +147,22 @@ CREATE TABLE IF NOT EXISTS `favorites` (
   CONSTRAINT `favorites_ibfk_2` FOREIGN KEY (`character_id`) REFERENCES `characters` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (1, 1, 2, Fri Feb 13 2026 08:55:37 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (2, 1, 4, Fri Feb 13 2026 08:55:39 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (3, 1, 11, Fri Feb 13 2026 08:55:43 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (4, 1, 9, Fri Feb 13 2026 08:55:44 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (5, 1, 12, Fri Feb 13 2026 08:55:45 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (6, 1, 15, Fri Feb 13 2026 08:55:49 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (7, 1, 14, Fri Feb 13 2026 08:55:49 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (8, 1, 33, Fri Feb 13 2026 08:55:56 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (9, 1, 41, Fri Feb 13 2026 08:56:03 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (10, 1, 52, Fri Feb 13 2026 08:56:06 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (11, 1, 62, Fri Feb 13 2026 08:56:10 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (12, 1, 66, Fri Feb 13 2026 08:56:14 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (13, 1, 65, Fri Feb 13 2026 08:56:15 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (14, 1, 76, Fri Feb 13 2026 08:56:20 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (15, 1, 80, Fri Feb 13 2026 08:56:21 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (16, 1, 86, Fri Feb 13 2026 08:56:24 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (17, 1, 85, Fri Feb 13 2026 08:56:25 GMT+0800 (中国标准时间));
-INSERT INTO `favorites` (`id`, `user_id`, `character_id`, `created_at`) VALUES (18, 1, 95, Fri Feb 13 2026 08:56:29 GMT+0800 (中国标准时间));
-
--- Table: users
-CREATE TABLE IF NOT EXISTS `users` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-INSERT INTO `users` (`id`, `username`, `email`, `password`) VALUES (1, 'Ease', '2119318733@qq.com', '$2b$10$SKbEn7JsQcONMFUT/E762ObuYxw4rjKhCIyZuCi7prEmef/EYOb0a');
-INSERT INTO `users` (`id`, `username`, `email`, `password`) VALUES (3, '安逸QAQ', '14789509113@sina.com', '$2b$10$pcrtuP1rR2MiwwDYLZejrO5Z6aT6BjBcZYXkYMk9G5vWwISE1GCNS');
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (1, 1, 2);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (2, 1, 4);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (4, 1, 9);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (3, 1, 11);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (5, 1, 12);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (7, 1, 14);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (6, 1, 15);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (8, 1, 33);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (9, 1, 41);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (10, 1, 52);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (11, 1, 62);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (13, 1, 65);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (12, 1, 66);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (14, 1, 76);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (15, 1, 80);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (17, 1, 85);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (16, 1, 86);
+INSERT INTO `favorites` (`id`, `user_id`, `character_id`) VALUES (18, 1, 95);
 

@@ -73,6 +73,30 @@ async function importDatabase() {
   let connection;
   try {
     console.log('✅ 初始化数据库连接池');
+    
+    // 检查并创建数据库（如果不存在）
+    const tempPool = mysql.createPool({
+      host: process.env.DB_HOST || 'localhost',
+      port: parseInt(process.env.DB_PORT) || 3306,
+      user: process.env.DB_USER || 'root',
+      password: process.env.DB_PASS || 'root',
+      waitForConnections: true,
+      connectionLimit: 1,
+      queueLimit: 0
+    });
+    
+    const tempConn = await tempPool.getConnection();
+    const dbName = process.env.DB_NAME || 'genshin_characters';
+    
+    // 检查数据库是否存在
+    const [rows] = await tempConn.query(`SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?`, [dbName]);
+    if (rows.length === 0) {
+      console.log(`📦 创建数据库: ${dbName}`);
+      await tempConn.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
+    }
+    tempConn.release();
+    await tempPool.end();
+    
     // 测试连接有效性
     const testConn = await pool.getConnection();
     testConn.release();

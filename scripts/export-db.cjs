@@ -40,7 +40,12 @@ async function exportDatabase() {
     console.log('✅ 数据库连接成功');
 
     // 读取所有模型文件
-    const modelFiles = fs.readdirSync(modelsDir).filter(file => file.endsWith('.js'));
+    let modelFiles = fs.readdirSync(modelsDir).filter(file => file.endsWith('.js'));
+    
+    // 按依赖顺序排序模型文件：users → characters → favorites
+    // 确保被引用的表先创建
+    const orderedModelFiles = ['userModel.js', 'characterModel.js', 'favoriteModel.js'];
+    modelFiles = orderedModelFiles.filter(file => modelFiles.includes(file));
     
     let connection;
     try {
