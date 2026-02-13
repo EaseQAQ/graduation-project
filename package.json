@@ -13,7 +13,9 @@
     "db:export": "node scripts/export-db.cjs",
     "db:import": "node scripts/import-db.cjs",
     "db:backup": "npm run db:export && echo '✅ 数据库备份已完成: scripts/export-db.sql'",
-    "db:restore": "npm run db:import && echo '🎉 数据库恢复已完成'"
+    "db:restore": "npm run db:import && echo '🎉 数据库恢复已完成'",
+    "commit": "node scripts/auto-commit.cjs",
+    "prepare": "husky install && simple-git-hooks"
   },
   "dependencies": {
     "axios": "^1.13.4",
@@ -38,7 +40,9 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.1",
-    "vite": "npm:rolldown-vite@7.2.5"
+    "vite": "npm:rolldown-vite@7.2.5",
+    "husky": "^9.0.11",
+    "simple-git-hooks": "^2.9.0"
   },
   "overrides": {
     "vite": "npm:rolldown-vite@7.2.5"
