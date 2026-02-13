@@ -18,13 +18,19 @@
 git clone https://github.com/your-username/my-vue3-js-project.git
 cd my-vue3-js-project
 ```
-2. **数据库初始化**
+2. **数据库管理**
 ```bash
-# 方式1：使用脚本导入（推荐）
+# 数据导入 (两种方式)
+## 方式1：使用脚本导入（推荐）
 node scripts/import-db.cjs
 
-# 方式2：手动SQL导入
+## 方式2：手动SQL导入
 mysql -u root -p genshin_characters < scripts/export-db.sql
+
+# 数据导出 (备份数据)
+node scripts/export-db.cjs
+或
+mysqldump -u root -p genshin_characters > scripts/export-db.sql
 ```
 
 3. **后端服务配置**
