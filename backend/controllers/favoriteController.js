@@ -8,32 +8,19 @@ const addFavorite = async (req, res) => {
     const { characterId } = req.body;
     
     if (!characterId) {
-      return res.status(400).json({ 
-        success: false, 
-        message: '角色ID不能为空' 
-      });
+      return res.status(400).json({ message: '角色ID不能为空' });
     }
     
     const result = await FavoriteModel.addFavorite(userId, characterId);
     
     if (result) {
-      res.status(200).json({ 
-        success: true, 
-        message: '收藏成功' 
-      });
+      res.status(200).json({ message: '收藏成功' });
     } else {
-      res.status(400).json({ 
-        success: false, 
-        message: '收藏失败' 
-      });
+      res.status(400).json({ message: '收藏失败' });
     }
   } catch (error) {
     console.error('添加收藏错误:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: '服务器错误', 
-      error: error.message 
-    });
+    res.status(500).json({ message: '服务器错误', error: error.message });
   }
 };
 
@@ -44,32 +31,19 @@ const removeFavorite = async (req, res) => {
     const { characterId } = req.params;
     
     if (!characterId) {
-      return res.status(400).json({ 
-        success: false, 
-        message: '角色ID不能为空' 
-      });
+      return res.status(400).json({ message: '角色ID不能为空' });
     }
     
     const result = await FavoriteModel.removeFavorite(userId, characterId);
     
     if (result) {
-      res.status(200).json({ 
-        success: true, 
-        message: '取消收藏成功' 
-      });
+      res.status(200).json({ message: '取消收藏成功' });
     } else {
-      res.status(400).json({ 
-        success: false, 
-        message: '取消收藏失败' 
-      });
+      res.status(400).json({ message: '取消收藏失败' });
     }
   } catch (error) {
     console.error('取消收藏错误:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: '服务器错误', 
-      error: error.message 
-    });
+    res.status(500).json({ message: '服务器错误', error: error.message });
   }
 };
 
@@ -79,17 +53,10 @@ const getFavorites = async (req, res) => {
     const userId = req.user.id;
     const favorites = await FavoriteModel.getUserFavorites(userId);
     
-    res.status(200).json({ 
-      success: true, 
-      favorites 
-    });
+    res.status(200).json({ favorites });
   } catch (error) {
     console.error('获取收藏列表错误:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: '服务器错误', 
-      error: error.message 
-    });
+    res.status(500).json({ message: '服务器错误', error: error.message });
   }
 };
 
@@ -100,25 +67,15 @@ const isFavorite = async (req, res) => {
     const { characterId } = req.params;
     
     if (!characterId) {
-      return res.status(400).json({ 
-        success: false, 
-        message: '角色ID不能为空' 
-      });
+      return res.status(400).json({ message: '角色ID不能为空' });
     }
     
     const isFavorite = await FavoriteModel.isFavorite(userId, characterId);
     
-    res.status(200).json({ 
-      success: true, 
-      isFavorite 
-    });
+    res.status(200).json({ isFavorite });
   } catch (error) {
     console.error('检查收藏状态错误:', error);
-    res.status(500).json({ 
-      success: false, 
-      message: '服务器错误', 
-      error: error.message 
-    });
+    res.status(500).json({ message: '服务器错误', error: error.message });
   }
 };
 

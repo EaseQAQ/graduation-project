@@ -229,13 +229,14 @@ const retryLoading = () => {
  * @returns {Array} 符合条件的角色数组
  */
 const filteredCharacters = computed(() => {
-  return characterStore.characters.filter(char => {
+  const chars = characterStore.characters || [];
+  return chars.filter(char => {
     // 元素、地区、星级、武器筛选
     const matchesElement = !selectedElement.value || char.element === selectedElement.value;
     const matchesRegion = !selectedRegion.value || char.region === selectedRegion.value;
     const matchesRarity = !selectedRarity.value || char.rarity.toString() === selectedRarity.value;
     const matchesWeapon = !selectedWeapon.value || char.weapon === selectedWeapon.value;
-    
+
     // 关键词模糊搜索
     const matchesSearch = !searchKeyword.value || 
       (char.name && char.name.toLowerCase().includes(searchKeyword.value.toLowerCase())) ||
@@ -247,7 +248,7 @@ const filteredCharacters = computed(() => {
       (char.region && char.region.toLowerCase().includes(searchKeyword.value.toLowerCase())) ||
       (char.voice_actor_cn && char.voice_actor_cn.toLowerCase().includes(searchKeyword.value.toLowerCase())) ||
       (char.voice_actor_jp && char.voice_actor_jp.toLowerCase().includes(searchKeyword.value.toLowerCase()));
-
+    
     return matchesElement && matchesRegion && matchesRarity && matchesWeapon && matchesSearch;
   });
 });
