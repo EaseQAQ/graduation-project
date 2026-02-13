@@ -9,8 +9,7 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Homepage,
-    meta: { requiresAuth: true }
+    component: Homepage
   },
   {
     path: '/gallery',
@@ -46,6 +45,13 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const isAuthenticated = localStorage.getItem('token') !== null;
   
+  // 进入首页时强制重置登录状态
+  if (to.path === '/') {
+    if (!isAuthenticated) {
+      localStorage.removeItem('user');
+    }
+  }
+
   // 检查是否需要认证
   if (to.meta.requiresAuth && !isAuthenticated) {
     // 保存用户想要访问的路径，登录后重定向回去
