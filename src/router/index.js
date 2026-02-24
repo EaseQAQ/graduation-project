@@ -33,6 +33,13 @@ const routes = [
     name: 'Register',
     component: Register,
     meta: { guestOnly: true }
+  },
+    // 重置密码功能已移除
+  // 重置密码功能已移除
+  // Catch-all route for any unmatched paths
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/'
   }
 ];
 

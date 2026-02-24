@@ -4,10 +4,45 @@
 
 | 功能       | 描述                          | 技术实现               |
 |------------|-----------------------------|------------------------|
+| 安全认证    | JWT认证+密码重置+验证码保护      | Express + JWT + Nodemailer |
+| 多维度筛选  | 按元素/地区/武器/星级筛选角色      | Vue 3 Composition API  |
+| 实时收藏    | 即时更新收藏状态                | Pinia 状态管理         |
+
+| 功能       | 描述                          | 技术实现               |
+|------------|-----------------------------|------------------------|
 | 多维度筛选  | 按元素/地区/武器/星级筛选角色  | Vue 3 Composition API  |
 | 实时收藏    | 即时更新收藏状态                | Pinia 状态管理         |
 | 响应式设计  | 适配手机/平板/PC               | CSS Flex/Grid 布局     |
 | JWT 认证    | 安全的用户认证系统              | Express + JWT          |
+
+## 🔐 环境变量配置
+
+后端服务需要在 `.env` 文件中配置以下变量：
+
+```env
+# 数据库配置
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your_password
+DB_NAME=genshin_characters
+
+# JWT配置
+JWT_SECRET=your_jwt_secret_key
+
+# 邮件服务配置
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=your_email@example.com
+SMTP_PASSWORD=your_email_password
+SMTP_SECURE=false
+EMAIL_FROM=no-reply@example.com
+
+# 前端URL
+FRONTEND_URL=http://localhost:5173
+
+# 后端端口
+BACKEND_PORT=3001
+```
 
 ## 🚀 快速开始
 

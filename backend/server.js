@@ -67,6 +67,8 @@ app.get('/api/characters', async (req, res) => {
 });
 
 // 认证相关API
+console.log('Mounting auth routes at /api/auth');
+console.log('Available routes:', authRoutes.stack.map(r => r.route?.path || r.path));
 app.use('/api/auth', authRoutes);
 
 // 收藏相关API
@@ -75,4 +77,12 @@ app.use('/api/favorites', favoriteRoutes);
 // 启动服务器 - 启动Express服务器监听指定端口
 app.listen(PORT, () => {
   console.log(`Backend server running on http://localhost:${PORT}`);
+  
+  // 手动检查已注册路由
+  authRoutes.stack.forEach(layer => {
+    if (layer.route) {
+      const methods = Object.keys(layer.route.methods).join(', ').toUpperCase();
+      console.log(`Registered auth route: ${methods} /api/auth${layer.route.path}`);
+    }
+  });
 });
