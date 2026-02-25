@@ -1,7 +1,6 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import { VitePWA } from 'vite-plugin-pwa'
-import path from 'path'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -9,9 +8,9 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
-        changeOrigin: true
-      }
-    }
+        changeOrigin: true,
+      },
+    },
   },
   resolve: {
     alias: {
@@ -20,28 +19,21 @@ export default defineConfig({
   },
   plugins: [
     vue(),
-    VitePWA({
-      manifest: {
-        name: '原神角色图鉴',
-        short_name: '原神图鉴',
-        description: '基于Vue3的原神角色数据可视化平台',
-        theme_color: '#ffffff',
-        icons: [
-          {
-            src: 'icons/icon-192x192.png',
-            sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: 'icons/icon-512x512.png',
-            sizes: '512x512',
-            type: 'image/png',
-          },
-        ],
+  ],
+  build: {
+    minify: 'esbuild',
+    rollupOptions: {
+      output: {
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash].[ext]',
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        },
       },
-      workbox: {
-        globPatterns: ['**/*.{html,js,css,json,png}'],
-      },
-    })
-  ]
-})
+    },
+    sourcemap: process.env.NODE_ENV !== 'production',
+  },
+});

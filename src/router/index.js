@@ -1,75 +1,74 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import Homepage from '../components/Homepage.vue';
-import CharacterGallery from '../components/CharacterGallery.vue';
-import Favorites from '../views/Favorites.vue';
-import Login from '../views/Login.vue';  
-import Register from '../views/Register.vue';  
+import { createRouter, createWebHistory } from "vue-router";
+import Homepage from "../components/Homepage.vue";
+import CharacterGallery from "../components/CharacterGallery.vue";
+import Favorites from "../views/Favorites.vue";
+import Login from "../views/Login.vue";
+import Register from "../views/Register.vue";
 
 const routes = [
   {
-    path: '/',
-    name: 'Home',
-    component: Homepage
+    path: "/",
+    name: "Home",
+    component: Homepage,
   },
   {
-    path: '/gallery',
-    name: 'Gallery',
-    component: CharacterGallery
+    path: "/gallery",
+    name: "Gallery",
+    component: CharacterGallery,
   },
   {
-    path: '/favorites',
-    name: 'Favorites',
+    path: "/favorites",
+    name: "Favorites",
     component: Favorites,
-    meta: { requiresAuth: true }  // 添加认证要求
+    meta: { requiresAuth: true }, // 添加认证要求
   },
-  {  
-    path: '/login',
-    name: 'Login',
+  {
+    path: "/login",
+    name: "Login",
     component: Login,
-    meta: { guestOnly: true }
+    meta: { guestOnly: true },
   },
-  {  
-    path: '/register',
-    name: 'Register',
+  {
+    path: "/register",
+    name: "Register",
     component: Register,
-    meta: { guestOnly: true }
+    meta: { guestOnly: true },
   },
-    // 重置密码功能已移除
+  // 重置密码功能已移除
   // 重置密码功能已移除
   // Catch-all route for any unmatched paths
   {
-    path: '/:pathMatch(.*)*',
-    redirect: '/'
-  }
+    path: "/:pathMatch(.*)*",
+    redirect: "/",
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 });
 
 // 添加路由守卫 - 保护需要认证的路由
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('token') !== null;
-  
+  const isAuthenticated = localStorage.getItem("token") !== null;
+
   // 进入首页时强制重置登录状态
-  if (to.path === '/') {
+  if (to.path === "/") {
     if (!isAuthenticated) {
-      localStorage.removeItem('user');
+      localStorage.removeItem("user");
     }
   }
 
   // 检查是否需要认证
   if (to.meta.requiresAuth && !isAuthenticated) {
     // 保存用户想要访问的路径，登录后重定向回去
-    next({ path: '/login', query: { redirect: to.fullPath } });
-  } 
+    next({ path: "/login", query: { redirect: to.fullPath } });
+  }
   // 检查是否只允许访客访问
   else if (to.meta.guestOnly && isAuthenticated) {
     // 如果已登录用户访问登录/注册页面，重定向到首页
-    next('/');
-  } 
-  else {
+    next("/");
+  } else {
     next();
   }
 });

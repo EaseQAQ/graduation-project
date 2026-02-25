@@ -1,56 +1,56 @@
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import favoriteService from '../services/favoriteService.js'
-import axios from 'axios'
+import { defineStore } from "pinia";
+import { ref, computed } from "vue";
+import favoriteService from "../services/favoriteService.js";
+import axios from "axios";
 
-export const useCharacterStore = defineStore('character', () => {
-  const favorites = ref([])
-  const characters = ref([])
-  const isLoading = ref(false)
-  const error = ref(null)
+export const useCharacterStore = defineStore("character", () => {
+  const favorites = ref([]);
+  const characters = ref([]);
+  const isLoading = ref(false);
+  const error = ref(null);
 
   // 检查角色是否被收藏
   const isCharacterFavorite = computed(() => (characterId) => {
-    return favorites.value.includes(characterId)
-  })
+    return favorites.value.includes(characterId);
+  });
 
   // 加载所有角色数据
   async function loadCharacters() {
     try {
-      isLoading.value = true
-      const response = await axios.get('http://localhost:3001/api/characters')
-      characters.value = response.data
-      error.value = null
+      isLoading.value = true;
+      const response = await axios.get("http://localhost:3001/api/characters");
+      characters.value = response.data;
+      error.value = null;
     } catch (err) {
-      error.value = err.message
-      console.error('Failed to load characters:', err)
+      error.value = err.message;
+      console.error("Failed to load characters:", err);
     } finally {
-      isLoading.value = false
+      isLoading.value = false;
     }
   }
 
   // 加载收藏列表
   async function loadFavorites() {
     try {
-      const response = await favoriteService.getFavorites()
-      favorites.value = Array.isArray(response) ? response : []
+      const response = await favoriteService.getFavorites();
+      favorites.value = Array.isArray(response) ? response : [];
     } catch (error) {
-      console.error('Failed to load favorites:', error)
-      favorites.value = []
+      console.error("Failed to load favorites:", error);
+      favorites.value = [];
     }
   }
 
   // 切换收藏状态
   function toggleFavorite(characterId) {
-    const index = favorites.value.indexOf(characterId)
+    const index = favorites.value.indexOf(characterId);
     if (index === -1) {
-      favorites.value.push(characterId)
+      favorites.value.push(characterId);
     } else {
-      favorites.value.splice(index, 1)
+      favorites.value.splice(index, 1);
     }
   }
 
-  return { 
+  return {
     favorites,
     characters,
     isLoading,
@@ -58,6 +58,6 @@ export const useCharacterStore = defineStore('character', () => {
     isCharacterFavorite,
     loadCharacters,
     loadFavorites,
-    toggleFavorite
-  }
-})
+    toggleFavorite,
+  };
+});
