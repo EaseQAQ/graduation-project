@@ -3,6 +3,8 @@ import UserModel from '../models/userModel.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { config } from '../config.js';
+import errorHandler from '../middleware/errorHandler.js';
+
 const router = express.Router();
 
 // 注册新用户 - 处理用户注册请求
@@ -52,10 +54,8 @@ router.post('/register', async (req, res) => {
       }
     });
   } catch (error) {
-    // 记录错误日志
-    console.error('注册错误:', error);
-    // 返回服务器错误响应
-    res.status(500).json({ message: '服务器错误', error: error.message });
+    // 使用统一错误处理中间件
+    errorHandler(error, req, res, null);
   }
 });
 
@@ -100,10 +100,8 @@ router.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
-    // 记录错误日志
-    console.error('登录错误:', error);
-    // 返回服务器错误响应
-    res.status(500).json({ message: '服务器错误', error: error.message });
+    // 使用统一错误处理中间件
+    errorHandler(error, req, res, null);
   }
 });
 
@@ -136,16 +134,8 @@ router.get('/me', async (req, res) => {
       email: user.email
     });
   } catch (error) {
-    // 记录错误日志
-    console.error('获取用户信息错误:', error);
-    
-    // 处理令牌验证错误
-    if (error.name === 'JsonWebTokenError') {
-      return res.status(401).json({ message: '无效的令牌' });
-    }
-    
-    // 返回服务器错误响应
-    res.status(500).json({ message: '服务器错误', error: error.message });
+    // 使用统一错误处理中间件
+    errorHandler(error, req, res, null);
   }
 });
 

@@ -1,5 +1,6 @@
 // 直接导入模型
 import FavoriteModel from '../models/favoriteModel.js';
+import errorHandler from '../middleware/errorHandler.js';
 
 // 添加收藏 - 处理用户添加角色收藏的请求
 const addFavorite = async (req, res) => {
@@ -24,10 +25,8 @@ const addFavorite = async (req, res) => {
       res.status(400).json({ message: '收藏失败' });
     }
   } catch (error) {
-    // 记录错误日志
-    console.error('添加收藏错误:', error);
-    // 返回服务器错误响应
-    res.status(500).json({ message: '服务器错误', error: error.message });
+    // 使用统一错误处理中间件
+    errorHandler(error, req, res, null);
   }
 };
 
@@ -54,10 +53,8 @@ const removeFavorite = async (req, res) => {
       res.status(400).json({ message: '取消收藏失败' });
     }
   } catch (error) {
-    // 记录错误日志
-    console.error('取消收藏错误:', error);
-    // 返回服务器错误响应
-    res.status(500).json({ message: '服务器错误', error: error.message });
+    // 使用统一错误处理中间件
+    errorHandler(error, req, res, null);
   }
 };
 
@@ -72,10 +69,8 @@ const getFavorites = async (req, res) => {
     // 返回收藏列表
     res.status(200).json({ favorites });
   } catch (error) {
-    // 记录错误日志
-    console.error('获取收藏列表错误:', error);
-    // 返回服务器错误响应
-    res.status(500).json({ message: '服务器错误', error: error.message });
+    // 使用统一错误处理中间件
+    errorHandler(error, req, res, null);
   }
 };
 
@@ -98,10 +93,8 @@ const isFavorite = async (req, res) => {
     // 返回收藏状态
     res.status(200).json({ isFavorite });
   } catch (error) {
-    // 记录错误日志
-    console.error('检查收藏状态错误:', error);
-    // 返回服务器错误响应
-    res.status(500).json({ message: '服务器错误', error: error.message });
+    // 使用统一错误处理中间件
+    errorHandler(error, req, res, null);
   }
 };
 

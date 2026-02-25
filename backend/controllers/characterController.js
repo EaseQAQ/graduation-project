@@ -1,4 +1,5 @@
 import CharacterModel from '../models/characterModel.js';
+import errorHandler from '../middleware/errorHandler.js';
 
 // 获取角色列表 - 处理获取所有角色信息的请求
 const getCharacters = async (req, res) => {
@@ -12,15 +13,8 @@ const getCharacters = async (req, res) => {
       characters
     });
   } catch (error) {
-    // 记录错误日志
-    console.error('获取角色列表错误:', error);
-    
-    // 返回服务器错误响应
-    res.status(500).json({
-      success: false,
-      message: '服务器错误',
-      error: error.message
-    });
+    // 使用统一错误处理中间件
+    errorHandler(error, req, res, null);
   }
 };
 

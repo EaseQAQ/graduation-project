@@ -1,4 +1,4 @@
-import pool from '../db.js';
+import db from '../db.js';
 
 // 用户模型 - 管理用户数据的CRUD操作
 const UserModel = {
@@ -13,7 +13,7 @@ const UserModel = {
    * - 使用完整Unicode字符集（utf8mb4）
    */
   createTable: async () => {
-    const connection = await pool.getConnection();
+    const connection = await db.pool.getConnection();
     try {
       await connection.execute(`
         CREATE TABLE IF NOT EXISTS users (
@@ -44,13 +44,18 @@ const UserModel = {
    * @throws {Error} - 当插入失败时抛出错误
    */
   register: async (username, email, passwordHash) => {
-    const connection = await pool.getConnection();
+    const connection = await db.pool.getConnection();
     try {
       const [result] = await connection.execute(
         'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
         [username, email, passwordHash]
       );
       console.log(`✅ 成功注册用户: ${username}, ID: ${result.insertId}`);
+      
+      // 清除相关缓存
+      db.queryCache.del(`user:email:${email}`);
+      db.queryCache.del(`user:id:${result.insertId}`);
+      
       return result.insertId;
     } catch (error) {
       console.error('❌ 注册用户错误:', error);
@@ -68,11 +73,11 @@ const UserModel = {
    * @throws {Error} - 当查询失败时抛出错误
    */
   findByEmail: async (email) => {
-    const connection = await pool.getConnection();
     try {
-      const [rows] = await connection.execute(
+      const rows = await db.query(
         'SELECT * FROM users WHERE email = ?',
-        [email]
+        [email],
+        { cacheKey: `user:email:${email}`, ttl: 3600 } // 缓存1小时
       );
       
       if (rows.length > 0) {
@@ -85,8 +90,6 @@ const UserModel = {
     } catch (error) {
       console.error('❌ 根据邮箱查找用户错误:', error);
       throw error;
-    } finally {
-      connection.release();
     }
   },
 
@@ -98,11 +101,11 @@ const UserModel = {
    * @throws {Error} - 当查询失败时抛出错误
    */
   findById: async (id) => {
-    const connection = await pool.getConnection();
     try {
-      const [rows] = await connection.execute(
+      const rows = await db.query(
         'SELECT * FROM users WHERE id = ?',
-        [id]
+        [id],
+        { cacheKey: `user:id:${id}`, ttl: 3600 } // 缓存1小时
       );
       
       if (rows.length > 0) {
@@ -115,8 +118,6 @@ const UserModel = {
     } catch (error) {
       console.error('❌ 根据ID查找用户错误:', error);
       throw error;
-    } finally {
-      connection.release();
     }
   }
 };

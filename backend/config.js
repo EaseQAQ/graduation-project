@@ -7,65 +7,75 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 class Config {
+  static #initialized = false;
+  static #config = {};
+
   /**
    * 初始化配置 - 在使用配置前必须调用
    * 
-   * 功能流程：
-   * 1. 确定.env文件路径
-   * 2. 加载环境变量
-   * 3. 验证必需的环境变量
-   * 4. 设置默认值
-   * 5. 打印配置摘要
+   * 功能特点：
+   * - 确保只初始化一次
+   * - 支持环境变量验证
+   * - 提供默认值
+   * - 自动加载.env文件
    */
   static init() {
-    // 明确指定.env文件路径 - 用于加载环境变量
+    if (this.#initialized) return;
+    
+    // 加载环境变量
+    this.#loadEnv();
+    
+    // 验证配置
+    this.#validateConfig();
+    
+    // 设置默认值
+    this.#setDefaults();
+    
+    // 打印配置摘要
+    this.#logConfig();
+    
+    this.#initialized = true;
+  }
+
+  static #loadEnv() {
     const envPath = path.join(__dirname, '.env');
     console.log('🔍 正在加载环境变量文件:', envPath);
     dotenv.config({ path: envPath });
+  }
 
-    // 打印所有加载的环境变量用于调试 - 仅显示与数据库、服务器和安全相关的变量
-    console.log('=== 已加载的环境变量 ===');
-    Object.keys(process.env).forEach(key => {
-      if (key.startsWith('DB_') || key === 'BACKEND_PORT' || key === 'JWT_SECRET' || key === 'NODE_ENV') {
-        console.log(`${key}: ${key.includes('PASSWORD') || key.includes('SECRET') ? '***' : process.env[key]}`);
-      }
-    });
-    console.log('====================================');
-
-    // 必需的环境变量 - 生产环境中必须设置
+  static #validateConfig() {
     const requiredVars = ['DB_HOST', 'DB_USER', 'DB_PASSWORD', 'DB_NAME', 'JWT_SECRET'];
     
     if (process.env.NODE_ENV === 'production') {
-      // 检查生产环境必需的环境变量是否都已设置
       for (const key of requiredVars) {
         if (!process.env[key]) {
           throw new Error(`❌ 缺少必需的环境变量: ${key}`);
         }
       }
     }
+  }
 
-    // 确保环境变量已加载 - 二次确认，防止遗漏
-    dotenv.config({ path: path.join(__dirname, '.env') });
-    
-    // 设置默认值 - 当环境变量未设置时使用默认值
-    this._config = {
-      DB_HOST: process.env.DB_HOST || 'localhost',           // 数据库主机地址
-      DB_USER: process.env.DB_USER || 'root',               // 数据库用户名
-      DB_PASSWORD: process.env.DB_PASSWORD || 'root',       // 数据库密码
-      DB_NAME: process.env.DB_NAME || 'genshin_characters', // 数据库名称
-      DB_PORT: process.env.DB_PORT || '3306',               // 数据库端口
-      BACKEND_PORT: process.env.BACKEND_PORT || '3001',     // 后端服务端口
-      JWT_SECRET: process.env.JWT_SECRET || 'your-secret-key' // JWT密钥
+  static #setDefaults() {
+    this.#config = {
+      DB_HOST: process.env.DB_HOST || 'localhost',
+      DB_USER: process.env.DB_USER || 'root',
+      DB_PASSWORD: process.env.DB_PASSWORD || 'root',
+      DB_NAME: process.env.DB_NAME || 'genshin_characters',
+      DB_PORT: process.env.DB_PORT || '3306',
+      BACKEND_PORT: process.env.BACKEND_PORT || '3001',
+      JWT_SECRET: process.env.JWT_SECRET || 'your-secret-key',
+      NODE_ENV: process.env.NODE_ENV || 'development'
     };
+  }
 
-    // 打印配置摘要（除敏感信息外）- 用于验证配置正确性
+  static #logConfig() {
     console.log('==== 环境变量配置 ====');
-    console.log('DB_HOST:', process.env.DB_HOST);
-    console.log('DB_USER:', process.env.DB_USER);
-    console.log('DB_NAME:', process.env.DB_NAME);
-    console.log('BACKEND_PORT:', process.env.BACKEND_PORT);
-    console.log('JWT_SECRET:', process.env.JWT_SECRET ? '***' : 'NOT SET');
-    console.log('NODE_ENV:', process.env.NODE_ENV || 'development');
+    console.log('DB_HOST:', this.#config.DB_HOST);
+    console.log('DB_USER:', this.#config.DB_USER);
+    console.log('DB_NAME:', this.#config.DB_NAME);
+    console.log('BACKEND_PORT:', this.#config.BACKEND_PORT);
+    console.log('JWT_SECRET:', '***');
+    console.log('NODE_ENV:', this.#config.NODE_ENV);
     console.log('======================');
   }
 
@@ -77,10 +87,14 @@ class Config {
    * @throws {Error} - 当配置不存在时抛出错误
    */
   static get(key) {
-    if (!this._config[key]) {
+    if (!this.#initialized) {
+      throw new Error('配置未初始化，请先调用Config.init()');
+    }
+    
+    if (!this.#config[key]) {
       throw new Error(`❌ 配置项 ${key} 不存在`);
     }
-    return this._config[key];
+    return this.#config[key];
   }
 }
 

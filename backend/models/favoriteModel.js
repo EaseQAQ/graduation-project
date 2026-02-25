@@ -1,4 +1,4 @@
-import pool from '../db.js';
+import db from '../db.js';
 
 // 收藏模型 - 管理用户收藏角色的数据操作
 const FavoriteModel = {
@@ -13,7 +13,7 @@ const FavoriteModel = {
    * - 使用完整Unicode字符集（utf8mb4）
    */
   createTable: async () => {
-    const connection = await pool.getConnection();
+    const connection = await db.pool.getConnection();
     try {
       await connection.execute(`
         CREATE TABLE IF NOT EXISTS favorites (
@@ -43,7 +43,7 @@ const FavoriteModel = {
    * @throws {Error} - 当插入失败时抛出错误
    */
   addFavorite: async (userId, characterId) => {
-    const connection = await pool.getConnection();
+    const connection = await db.pool.getConnection();
     try {
       const [result] = await connection.execute(
         'INSERT INTO favorites (user_id, character_id) VALUES (?, ?)',
@@ -52,6 +52,11 @@ const FavoriteModel = {
       
       if (result.affectedRows > 0) {
         console.log(`✅ 成功添加用户ID ${userId} 收藏角色ID ${characterId}`);
+        
+        // 清除相关缓存
+        db.queryCache.del(`favorites:user:${userId}`);
+        db.queryCache.del(`favorites:user:${userId}:character:${characterId}`);
+        
         return true;
       } else {
         console.log(`⚠️ 未添加收藏，可能已存在或数据无效`);
@@ -74,7 +79,7 @@ const FavoriteModel = {
    * @throws {Error} - 当删除失败时抛出错误
    */
   removeFavorite: async (userId, characterId) => {
-    const connection = await pool.getConnection();
+    const connection = await db.pool.getConnection();
     try {
       const [result] = await connection.execute(
         'DELETE FROM favorites WHERE user_id = ? AND character_id = ?',
@@ -83,6 +88,11 @@ const FavoriteModel = {
       
       if (result.affectedRows > 0) {
         console.log(`✅ 成功取消用户ID ${userId} 收藏角色ID ${characterId}`);
+        
+        // 清除相关缓存
+        db.queryCache.del(`favorites:user:${userId}`);
+        db.queryCache.del(`favorites:user:${userId}:character:${characterId}`);
+        
         return true;
       } else {
         console.log(`⚠️ 未取消收藏，可能该角色不在收藏列表中`);
@@ -105,11 +115,11 @@ const FavoriteModel = {
    * @throws {Error} - 当查询失败时抛出错误
    */
   isFavorite: async (userId, characterId) => {
-    const connection = await pool.getConnection();
     try {
-      const [rows] = await connection.execute(
+      const rows = await db.query(
         'SELECT * FROM favorites WHERE user_id = ? AND character_id = ?',
-        [userId, characterId]
+        [userId, characterId],
+        { cacheKey: `favorites:user:${userId}:character:${characterId}`, ttl: 300 } // 缓存5分钟
       );
       
       if (rows.length > 0) {
@@ -122,8 +132,6 @@ const FavoriteModel = {
     } catch (error) {
       console.error('❌ 检查收藏状态错误:', error);
       throw error;
-    } finally {
-      connection.release();
     }
   },
 
@@ -135,11 +143,11 @@ const FavoriteModel = {
    * @throws {Error} - 当查询失败时抛出错误
    */
   getUserFavorites: async (userId) => {
-    const connection = await pool.getConnection();
     try {
-      const [rows] = await connection.execute(
+      const rows = await db.query(
         'SELECT character_id FROM favorites WHERE user_id = ?',
-        [userId]
+        [userId],
+        { cacheKey: `favorites:user:${userId}`, ttl: 300 } // 缓存5分钟
       );
       
       const favoriteIds = rows.map(row => row.character_id);
@@ -148,8 +156,6 @@ const FavoriteModel = {
     } catch (error) {
       console.error('❌ 获取用户收藏列表错误:', error);
       throw error;
-    } finally {
-      connection.release();
     }
   }
 };

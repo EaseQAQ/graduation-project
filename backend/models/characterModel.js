@@ -1,4 +1,4 @@
-import pool from '../db.js';
+import db from '../db.js';
 
 // 角色模型 - 管理角色数据的CRUD操作
 const CharacterModel = {
@@ -12,7 +12,7 @@ const CharacterModel = {
    * - 建立主键和索引
    */
   createTable: async () => {
-    const connection = await pool.getConnection();
+    const connection = await db.pool.getConnection();
     try {
       await connection.execute(`
         CREATE TABLE IF NOT EXISTS characters (
@@ -58,16 +58,17 @@ const CharacterModel = {
    * - 支持大数量数据查询
    */
   getAll: async () => {
-    const connection = await pool.getConnection();
     try {
-      const [rows] = await connection.execute('SELECT * FROM characters ORDER BY name');
+      const rows = await db.query(
+        'SELECT * FROM characters ORDER BY name',
+        [],
+        { cacheKey: 'characters:all', ttl: 3600 } // 缓存1小时
+      );
       console.log(`✅ 成功获取 ${rows.length} 个角色数据`);
       return rows;
     } catch (error) {
       console.error('❌ 获取所有角色错误:', error);
       throw error;
-    } finally {
-      connection.release();
     }
   },
 
@@ -79,12 +80,13 @@ const CharacterModel = {
    * @throws {Error} - 当数据库查询失败时抛出错误
    */
   getById: async (id) => {
-    const connection = await pool.getConnection();
     try {
-      const [rows] = await connection.execute(
+      const rows = await db.query(
         'SELECT * FROM characters WHERE id = ?',
-        [id]
+        [id],
+        { cacheKey: `characters:${id}`, ttl: 3600 } // 缓存1小时
       );
+      
       if (rows.length > 0) {
         console.log(`✅ 成功获取角色ID ${id} 的信息`);
         return rows[0];
@@ -95,8 +97,6 @@ const CharacterModel = {
     } catch (error) {
       console.error('❌ 根据ID获取角色错误:', error);
       throw error;
-    } finally {
-      connection.release();
     }
   },
 
@@ -112,13 +112,17 @@ const CharacterModel = {
    * @throws {Error} - 当插入失败时抛出错误
    */
   addCharacter: async (name, element, rarity, description, imageUrl) => {
-    const connection = await pool.getConnection();
+    const connection = await db.pool.getConnection();
     try {
       const [result] = await connection.execute(
         'INSERT INTO characters (name, element, rarity, description, image_url) VALUES (?, ?, ?, ?, ?)',
         [name, element, rarity, description, imageUrl]
       );
       console.log(`✅ 成功添加角色: ${name}, ID: ${result.insertId}`);
+      
+      // 清除相关缓存
+      db.queryCache.del('characters:all');
+      
       return result.insertId;
     } catch (error) {
       console.error('❌ 添加角色错误:', error);
@@ -141,7 +145,7 @@ const CharacterModel = {
    * @throws {Error} - 当更新失败时抛出错误
    */
   updateCharacter: async (id, name, element, rarity, description, imageUrl) => {
-    const connection = await pool.getConnection();
+    const connection = await db.pool.getConnection();
     try {
       const [result] = await connection.execute(
         'UPDATE characters SET name = ?, element = ?, rarity = ?, description = ?, image_url = ? WHERE id = ?',
@@ -150,6 +154,11 @@ const CharacterModel = {
       
       if (result.affectedRows > 0) {
         console.log(`✅ 成功更新角色ID ${id} 的信息`);
+        
+        // 清除相关缓存
+        db.queryCache.del(`characters:${id}`);
+        db.queryCache.del('characters:all');
+        
         return true;
       } else {
         console.log(`⚠️ 未更新角色ID ${id}，可能数据未变化`);
@@ -171,7 +180,7 @@ const CharacterModel = {
    * @throws {Error} - 当删除失败时抛出错误
    */
   deleteCharacter: async (id) => {
-    const connection = await pool.getConnection();
+    const connection = await db.pool.getConnection();
     try {
       const [result] = await connection.execute(
         'DELETE FROM characters WHERE id = ?',
@@ -180,6 +189,11 @@ const CharacterModel = {
       
       if (result.affectedRows > 0) {
         console.log(`✅ 成功删除角色ID ${id}`);
+        
+        // 清除相关缓存
+        db.queryCache.del(`characters:${id}`);
+        db.queryCache.del('characters:all');
+        
         return true;
       } else {
         console.log(`⚠️ 未删除角色ID ${id}，可能角色不存在`);

@@ -1,5 +1,5 @@
 import { config } from './config.js';
-// 初始化配置
+// 初始化配置 - 确保在所有模块之前调用
 config.init();
 
 import express from 'express';
@@ -8,10 +8,9 @@ import favoriteRoutes from './routes/favoriteRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import pool from './db.js';
 
-// 已在上方定义过 __dirname，用于获取当前文件目录路径
-
 const app = express();
-const PORT = process.env.BACKEND_PORT || 3001;
+// 使用配置中心的值，而不是直接访问process.env
+const PORT = config.get('BACKEND_PORT');
 
 import helmet from 'helmet';
 import { apiLimiter, authLimiter } from './middleware/rateLimiter.js';
@@ -23,8 +22,8 @@ app.use(express.json({ limit: '10kb' })); // 限制请求体大小为10KB，防�
 // CORS配置 - 跨域资源共享设置
 app.use(cors({
   // 生产环境使用指定的前端域名，开发环境允许所有来源
-  origin: process.env.NODE_ENV === 'production' 
-    ? process.env.CLIENT_URL 
+  origin: config.get('NODE_ENV') === 'production' 
+    ? config.get('CLIENT_URL') 
     : true, 
   // 允许的HTTP方法
   methods: ['GET','POST','PUT','DELETE'],
@@ -86,17 +85,24 @@ app.use('/api/auth', authLimiter, authRoutes);
 // 收藏相关API
 app.use('/api/favorites', favoriteRoutes); // 挂载收藏路由
 
-// 统一的错误处理中间件
+// 错误处理中间件 - 必须放在所有路由之后
+import errorHandler from './middleware/errorHandler.js';
 app.use((err, req, res, next) => {
-  // 记录错误详情
-  console.error('❌ 服务器错误:', err);
-  // 返回标准错误响应
-  res.status(500).json({
-    error: '内部服务器错误',
-    message: err.message,
-    // 仅在开发环境中返回堆栈跟踪
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
-  });
+  // 确保所有错误都经过统一处理
+  errorHandler(err, req, res, next);
+});
+
+// 404 处理中间件 - 放在最后
+app.use((req, res) => {
+  errorHandler(
+    { 
+      name: 'NotFoundError', 
+      message: `路由 ${req.method} ${req.path} 不存在` 
+    }, 
+    req, 
+    res, 
+    next
+  );
 });
 
 // 服务器启动已在startServer函数中处理，此处删除重复代码
