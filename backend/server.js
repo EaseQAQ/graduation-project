@@ -6,7 +6,7 @@ import express from 'express';
 import cors from 'cors';
 import favoriteRoutes from './routes/favoriteRoutes.js';
 import authRoutes from './routes/authRoutes.js';
-import pool from './db.js';
+import characterRoutes from './routes/characterRoutes.js';
 
 const app = express();
 // 使用配置中心的值，而不是直接访问process.env
@@ -64,19 +64,8 @@ async function startServer() {
 
 startServer();
 
-// 提供角色数据API - 从数据库获取所有角色信息
-app.get('/api/characters', async (req, res, next) => {
-  try {
-    // 执行数据库查询，获取所有角色数据
-    const [rows] = await pool.query('SELECT * FROM characters');
-    console.log(`✅ 成功获取 ${rows.length} 个角色数据`);
-    // 返回角色数据列表
-    res.json(rows);
-  } catch (error) {
-    // 将错误传递给统一的错误处理中间件
-    next(error);
-  }
-});
+// 角色数据API - 使用专用路由文件
+app.use('/api/characters', characterRoutes);
 
 // 认证相关API - 应用更严格的速率限制
 // 限制认证接口的请求频率，防止暴力破解
