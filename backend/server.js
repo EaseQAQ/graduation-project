@@ -1,74 +1,102 @@
-import dotenv from 'dotenv';
-
-// 优先加载环境变量 - 必须在其他模块之前执行
-dotenv.config();
-
-// 环境变量验证
-console.log('==== 环境变量验证 ====');
-console.log('DB_HOST:', process.env.DB_HOST);
-console.log('DB_USER:', process.env.DB_USER);
-console.log('DB_NAME:', process.env.DB_NAME);
-console.log('JWT_SECRET:', process.env.JWT_SECRET ? '***' : 'NOT SET');
-console.log('======================');
+import { config } from './config.js';
+// 初始化配置
+config.init();
 
 import express from 'express';
 import cors from 'cors';
-import { fileURLToPath } from 'url';
-import path from 'path';
 import favoriteRoutes from './routes/favoriteRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import pool from './db.js';
 
-// 定义 __dirname 用于ES模块 - 在ES模块中无法直接使用__dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// 已在上方定义过 __dirname，用于获取当前文件目录路径
 
 const app = express();
 const PORT = process.env.BACKEND_PORT || 3001;
 
-// 中间件配置 - 设置跨域和JSON解析
-app.use(cors());
-app.use(express.json());
+import helmet from 'helmet';
+import { apiLimiter, authLimiter } from './middleware/rateLimiter.js';
+
+// 安全相关中间件
+app.use(helmet()); // 设置安全相关的HTTP头，防止常见安全攻击
+app.use(express.json({ limit: '10kb' })); // 限制请求体大小为10KB，防止大文件上传攻击
+
+// CORS配置 - 跨域资源共享设置
+app.use(cors({
+  // 生产环境使用指定的前端域名，开发环境允许所有来源
+  origin: process.env.NODE_ENV === 'production' 
+    ? process.env.CLIENT_URL 
+    : true, 
+  // 允许的HTTP方法
+  methods: ['GET','POST','PUT','DELETE'],
+  // 允许的请求头
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  // 允许携带凭证（如cookies）
+  credentials: true,
+  // 预检请求结果缓存时间（24小时）
+  maxAge: 86400 
+}));
+
+// 应用速率限制 - 防止请求洪水攻击
+app.use(apiLimiter); // 通用API速率限制，每15分钟最多100次请求
 
 // 使用共享数据库连接池
 
-// 测试数据库连接 - 确保数据库能够正常连接
-async function testDbConnection() {
+// 测试数据库连接 - 使用共享连接池
+import db from './db.js'; // 导入数据库连接模块
+
+// 启动服务器前测试数据库连接
+async function startServer() {
   try {
-    const connection = await pool.getConnection();
-    console.log('✅ Database connection successful (shared pool)');
-    connection.release();
+    // 测试数据库连接
+    await db.testDbConnection();
+    console.log('✅ 数据库连接验证成功');
   } catch (error) {
-    console.error('❌ Database connection error:', error);
+    // 连接失败时终止进程
+    console.error('❌ 数据库连接失败:', error);
+    process.exit(1);
   }
+  
+  // 启动服务器
+  app.listen(PORT, () => {
+    console.log(`🚀 后端服务器正在运行在 http://localhost:${PORT}`);
+    console.log(`🌍 环境: ${process.env.NODE_ENV || 'development'}`);
+  });
 }
 
-testDbConnection();
+startServer();
 
 // 提供角色数据API - 从数据库获取所有角色信息
-app.get('/api/characters', async (req, res) => {
+app.get('/api/characters', async (req, res, next) => {
   try {
+    // 执行数据库查询，获取所有角色数据
     const [rows] = await pool.query('SELECT * FROM characters');
-    console.log(`✅ Successfully fetched ${rows.length} characters from database`);
+    console.log(`✅ 成功获取 ${rows.length} 个角色数据`);
+    // 返回角色数据列表
     res.json(rows);
   } catch (error) {
-    console.error('❌ Error fetching characters:', error.message);
-    console.error('Error details:', error);
-    res.status(500).json({ 
-      error: 'Failed to fetch character data',
-      details: error.message,
-      code: error.code
-    });
+    // 将错误传递给统一的错误处理中间件
+    next(error);
   }
 });
 
-// 认证相关API
-app.use('/api/auth', authRoutes);
+// 认证相关API - 应用更严格的速率限制
+// 限制认证接口的请求频率，防止暴力破解
+app.use('/api/auth', authLimiter, authRoutes);
 
 // 收藏相关API
-app.use('/api/favorites', favoriteRoutes);
+app.use('/api/favorites', favoriteRoutes); // 挂载收藏路由
 
-// 启动服务器 - 启动Express服务器监听指定端口
-app.listen(PORT, () => {
-  console.log(`Backend server running on http://localhost:${PORT}`);
+// 统一的错误处理中间件
+app.use((err, req, res, next) => {
+  // 记录错误详情
+  console.error('❌ 服务器错误:', err);
+  // 返回标准错误响应
+  res.status(500).json({
+    error: '内部服务器错误',
+    message: err.message,
+    // 仅在开发环境中返回堆栈跟踪
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+  });
 });
+
+// 服务器启动已在startServer函数中处理，此处删除重复代码
