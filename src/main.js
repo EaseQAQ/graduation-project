@@ -14,6 +14,8 @@ app.use(router)
 
 const appInstance = app.mount('#app')
 
-// 加载用户收藏
-const characterStore = useCharacterStore()
-characterStore.loadFavorites()
+// 延迟加载用户收藏，确保路由系统已准备就绪
+router.isReady().then(() => {
+  const characterStore = useCharacterStore()
+  characterStore.loadFavorites()
+})

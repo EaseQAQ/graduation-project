@@ -134,6 +134,14 @@ const handleVisibilityChange = () => {
 
 // 监听页面可见性变化
 document.addEventListener('visibilitychange', handleVisibilityChange);
+
+// 组件卸载时清理事件监听器
+import { onBeforeUnmount } from 'vue';
+
+// 组件卸载时清理事件监听器
+onBeforeUnmount(() => {
+  document.removeEventListener('visibilitychange', handleVisibilityChange);
+});
 </script>
 <style scoped>
 @import '../css/AuthShared.css';
